@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PocketDict</string>
+
+    <string name="enterAWordHere">Enter a word here</string>
+</resources>

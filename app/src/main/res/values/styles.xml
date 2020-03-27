@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSurface">@android:color/white</item> <!-- chip background -->
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="colorDivider">@color/colorDivider</item>
+    </style>
+
+</resources>
