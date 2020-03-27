@@ -39,5 +39,13 @@ data class ParsedTranslation(
         private fun reformatHtml(s:String):String = s.replace("<em>","<b>").replace("</em>","</b>")
     }
 
+    fun getDescription():String {
+        val sb = StringBuilder()
+        for(item in items) {
+            if(sb.isNotEmpty()) sb.append(", ")
+            sb.append(item.text)
+        }
+        return sb.toString()
+    }
 }
 

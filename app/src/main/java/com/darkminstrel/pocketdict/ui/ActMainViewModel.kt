@@ -51,6 +51,8 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
         }
     }
 
+    suspend fun getCachedTranslation(key:String) = db.get(key)
+
     override fun onCleared() {
         job?.cancel()
         job = null

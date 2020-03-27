@@ -7,18 +7,25 @@ import android.widget.AutoCompleteTextView
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
 import java.util.*
 
-class ActMainView(private val rootView: View, window: Window, vm: ActMainViewModel){
+class ActMainView(private val rootView: View, window: Window, private val vm: ActMainViewModel){
     private val scrollView = rootView.findViewById<ScrollView>(R.id.scrollView)
     private val containerOutput = rootView.findViewById<View>(R.id.containerOutput)
     private val containerInput = rootView.findViewById<View>(R.id.containerInput)
     private val progressBar = rootView.findViewById<View>(R.id.progressBar)
     private val tvError = rootView.findViewById<TextView>(R.id.tvError)
     private val vhData = ViewHolderData(rootView.findViewById(R.id.containerData), vm)
+    private val adapterRecent = AdapterRecent(vm) {query -> searchView.setQuery(query, true)}
+    private val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView).apply {
+        layoutManager = LinearLayoutManager(context)
+        adapter = adapterRecent
+    }
 
     private val searchView = rootView.findViewById<SearchView>(R.id.searchView).apply {
         setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -31,7 +38,7 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
                 return true
             }
         })
-        setQuery("hamster", true)   //TODO kill
+        //setQuery("hamster", true)   //TODO kill
     }
     private val searchViewEditText:AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
@@ -75,6 +82,15 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
     }
      */
 
+    fun tryClear():Boolean{
+        if(searchView.query.isNotEmpty()) {
+            vm.clearSearch()
+            searchView.setQuery("", false)
+            searchView.requestFocus()
+            return true
+        }else return false
+    }
+
     fun onResume() {
         searchViewEditText?.selectAll()
         searchView.requestFocus()
@@ -85,6 +101,7 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
         progressBar.visibility = if(viewState is ViewStateTranslate.Progress) View.VISIBLE else View.INVISIBLE
         tvError.visibility = if(viewState is ViewStateTranslate.Error) View.VISIBLE else View.INVISIBLE
         scrollView.visibility = if(viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
+        recyclerView.visibility = if(viewState is ViewStateTranslate.Empty) View.VISIBLE else View.INVISIBLE
 
         if(viewState is ViewStateTranslate.Error){
             tvError.text = viewState.errorMessage
@@ -96,6 +113,7 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
 
     fun setCacheKeys(keys:List<String>){
         DBG("Keys: $keys")
+        adapterRecent.setCacheKeys(keys)
         vhData.setCacheKeys(keys)
     }
 

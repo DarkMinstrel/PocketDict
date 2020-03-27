@@ -24,6 +24,10 @@ class ActMain : AppCompatActivity() {
         super.onResume()
         vh.onResume()
     }
+
+    override fun onBackPressed() {
+        if(!vh.tryClear()) super.onBackPressed()
+    }
 }
 
 
