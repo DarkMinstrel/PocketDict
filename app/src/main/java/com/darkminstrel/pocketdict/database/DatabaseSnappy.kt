@@ -17,7 +17,7 @@ class DatabaseSnappy(context: Context):Database {
 
     override suspend fun getAllKeys(): List<String> {
         val list = ArrayList<String>()
-        val iterator = snappyDB.allKeysReverseIterator()
+        val iterator = snappyDB.allKeysIterator()
         while(iterator.hasNext()) list += iterator.next(1000000)
         iterator.close()
         return list

@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.darkminstrel.pocketdict.api.ApiResult
-import com.darkminstrel.pocketdict.api.ResponseTranslate
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import kotlinx.coroutines.*
-import retrofit2.HttpException
 
 class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
     private val db = usecase.db
@@ -37,9 +35,14 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
         liveDataResult.value = ViewStateTranslate.Progress
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
-            val result = ApiResult.from { usecase.query(query) }
-            val viewState = ViewStateTranslate.from(result)
-            if(isActive) liveDataResult.postValue(viewState)
+            val cache = db.get(query)
+            if(cache!=null){
+                if(isActive) liveDataResult.postValue(ViewStateTranslate.Data(cache))
+            }else{
+                val apiResult = ApiResult.from { usecase.query(query) }
+                val viewState = ViewStateTranslate.from(apiResult)
+                if(isActive) liveDataResult.postValue(viewState)
+            }
         }
     }
 

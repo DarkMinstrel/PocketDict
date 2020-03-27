@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?listPreferredItemHeight"
-    android:layout_marginStart="@dimen/margin_horizontal"
-    android:layout_marginEnd="@dimen/margin_horizontal"
+    android:paddingStart="@dimen/margin_horizontal"
+    android:paddingEnd="@dimen/margin_horizontal"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
