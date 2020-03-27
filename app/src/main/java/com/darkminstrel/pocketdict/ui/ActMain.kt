@@ -17,6 +17,7 @@ class ActMain : AppCompatActivity() {
         val vm = getViewModel<ActMainViewModel>()
         vh = ActMainView(findViewById(android.R.id.content), window, vm)
         vm.getLiveDataTranslate().observe(this, Observer { viewState -> vh.setViewState(viewState) })
+        vm.getLiveDataCacheKeys().observe(this, Observer { keys -> vh.setCacheKeys(keys) })
     }
 
     override fun onResume() {

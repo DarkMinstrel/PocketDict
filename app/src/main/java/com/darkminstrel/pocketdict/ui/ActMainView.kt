@@ -8,6 +8,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import com.darkminstrel.pocketdict.Config
+import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
 import java.util.*
 
@@ -17,7 +18,7 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
     private val containerInput = rootView.findViewById<View>(R.id.containerInput)
     private val progressBar = rootView.findViewById<View>(R.id.progressBar)
     private val tvError = rootView.findViewById<TextView>(R.id.tvError)
-    private val vhData = ViewHolderData(rootView.findViewById(R.id.containerData))
+    private val vhData = ViewHolderData(rootView.findViewById(R.id.containerData), vm)
 
     private val searchView = rootView.findViewById<SearchView>(R.id.searchView).apply {
         setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -80,7 +81,7 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
     }
 
     fun setViewState(viewState: ViewStateTranslate) {
-        //DBG("View state: $viewState")
+        DBG("View state: ${viewState.javaClass.simpleName}")
         progressBar.visibility = if(viewState is ViewStateTranslate.Progress) View.VISIBLE else View.INVISIBLE
         tvError.visibility = if(viewState is ViewStateTranslate.Error) View.VISIBLE else View.INVISIBLE
         scrollView.visibility = if(viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
@@ -91,6 +92,11 @@ class ActMainView(private val rootView: View, window: Window, vm: ActMainViewMod
             searchView.clearFocus()
             vhData.setData(viewState.translation)
         }
+    }
+
+    fun setCacheKeys(keys:List<String>){
+        DBG("Keys: $keys")
+        vhData.setCacheKeys(keys)
     }
 
     /*

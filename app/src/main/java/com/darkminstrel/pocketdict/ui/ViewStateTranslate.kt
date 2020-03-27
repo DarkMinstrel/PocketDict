@@ -11,8 +11,8 @@ sealed class ViewStateTranslate {
     data class Data(val translation: ParsedTranslation):ViewStateTranslate()
     data class Error(val errorMessage:String):ViewStateTranslate()
 
-    companion object{
-        fun from(apiResult: ApiResult<ResponseTranslate>):ViewStateTranslate{
+    companion object {
+        fun from(apiResult: ApiResult<ResponseTranslate>):ViewStateTranslate {
             return when(apiResult){
                 is ApiResult.Success -> {
                     val response = apiResult.value
@@ -20,7 +20,8 @@ sealed class ViewStateTranslate {
                         Error(response.message) //internal error
                     }
                     val parsed = ParsedTranslation.from(response)
-                    parsed?.let { Data(parsed) } ?: Error("No translations found")  //TODO
+                    parsed?.let { Data(it)}
+                        ?: Error("No translations found")  //TODO
                 }
                 is ApiResult.Error -> {
                     when(apiResult.error){
@@ -33,5 +34,6 @@ sealed class ViewStateTranslate {
                 }
             }
         }
+
     }
 }
