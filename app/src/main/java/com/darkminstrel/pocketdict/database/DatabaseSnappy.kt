@@ -19,6 +19,7 @@ class DatabaseSnappy(context: Context):Database {
         val list = ArrayList<String>()
         val iterator = snappyDB.allKeysReverseIterator()
         while(iterator.hasNext()) list += iterator.next(1000000)
+        iterator.close()
         return list
     }
 
