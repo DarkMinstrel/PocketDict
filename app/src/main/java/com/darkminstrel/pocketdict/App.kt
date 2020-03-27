@@ -2,11 +2,10 @@ package com.darkminstrel.pocketdict
 
 import android.app.Application
 import com.darkminstrel.pocketdict.api.ApiImpl
-import com.darkminstrel.pocketdict.database.Database
-import com.darkminstrel.pocketdict.database.DatabaseSnappy
+import com.darkminstrel.pocketdict.database.DatabaseRoom
+import com.darkminstrel.pocketdict.database.Databaseable
 import com.darkminstrel.pocketdict.ui.ActMainViewModel
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
-import com.snappydb.DBFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.android.viewmodel.dsl.viewModel
@@ -23,7 +22,7 @@ class App: Application() {
     private fun setupKoin(): KoinApplication {
         val appModule = module {
             single{ ApiImpl().makeRetrofitService() }
-            single{ DatabaseSnappy(get()) as Database }
+            single{ DatabaseRoom(get()) as Databaseable }
         }
         val usecaseModule = module {
             factory{ UsecaseTranslate(get(), get()) }

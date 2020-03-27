@@ -1,0 +1,19 @@
+package com.darkminstrel.pocketdict.database
+
+import androidx.room.Dao
+import androidx.room.Query
+
+@Dao
+interface RoomDao {
+    @Query("SELECT `key` FROM RoomEntity ORDER BY `rowid` DESC")
+    fun getAllKeys(): List<String>
+
+    @Query("INSERT INTO RoomEntity (`key`,`value`) VALUES (:key, :value)")
+    fun put(key:String, value:String)
+
+    @Query("SELECT value FROM RoomEntity WHERE `key` = :key")
+    fun get(key: String): String?
+
+    @Query("DELETE FROM RoomEntity WHERE `key` = :key")
+    fun deleteKey(key:String)
+}

@@ -1,44 +1,35 @@
 package com.darkminstrel.pocketdict.database
 
 import android.content.Context
+import androidx.room.Room
 import com.darkminstrel.pocketdict.data.ParsedTranslation
-import com.snappydb.DBFactory
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DatabaseSnappy(context: Context):Database {
+class DatabaseRoom(context: Context):Databaseable {
     private val moshiAdapter = Moshi.Builder().build().adapter(ParsedTranslation::class.java)
-    private val snappyDB = DBFactory.open(context, "translations")
-
-    override suspend fun hasKey(key: String): Boolean {
-        return snappyDB.exists(key)
-    }
+    private val db = Room.databaseBuilder(context, RoomDB::class.java, "translations.db").build()
 
     override suspend fun getAllKeys(): List<String> {
-        val list = ArrayList<String>()
-        val iterator = snappyDB.allKeysIterator()
-        while(iterator.hasNext()) list += iterator.next(1000000)
-        iterator.close()
-        return list
+        return db.getDao().getAllKeys()
     }
 
     override suspend fun get(key: String): ParsedTranslation? {
+        val json: String = db.getDao().get(key) ?: return null
         return try{
             withContext(Dispatchers.IO) {
-                moshiAdapter.fromJson(snappyDB.get(key))
+                moshiAdapter.fromJson(json)
             }
-        }catch (e:Exception){
-            null
-        }
+        }catch (e:Exception){ null }
     }
 
     override suspend fun put(key: String, value: ParsedTranslation) {
         val json = moshiAdapter.toJson(value)
-        snappyDB.put(key, json)
+        db.getDao().put(key, json)
     }
 
     override suspend fun delete(key: String) {
-        snappyDB.del(key)
+        db.getDao().deleteKey(key)
     }
 }
