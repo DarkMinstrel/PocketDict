@@ -9,8 +9,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.R
+import java.util.*
 
-class ActMainView(private val rootView: View, private val window: Window, vm: ActMainViewModel){
+class ActMainView(private val rootView: View, window: Window, vm: ActMainViewModel){
     private val scrollView = rootView.findViewById<ScrollView>(R.id.scrollView)
     private val containerOutput = rootView.findViewById<View>(R.id.containerOutput)
     private val containerInput = rootView.findViewById<View>(R.id.containerInput)
@@ -25,7 +26,7 @@ class ActMainView(private val rootView: View, private val window: Window, vm: Ac
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                vm.onQuerySubmit(query)
+                vm.onQuerySubmit(query.trim().toLowerCase(Locale.getDefault()))
                 return true
             }
         })

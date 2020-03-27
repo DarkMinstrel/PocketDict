@@ -3,7 +3,9 @@ package com.darkminstrel.pocketdict.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.api.ApiResult
+import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import kotlinx.coroutines.*
 
@@ -24,10 +26,10 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
         liveDataResult.value = ViewStateTranslate.Progress
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
-            val result = ApiResult.from {
-                usecase.query(query) }
+            val result = ApiResult.from { usecase.query(query) }
+            val viewState = ViewStateTranslate.from(result)
             withContext(Dispatchers.Main) {
-                liveDataResult.value = ViewStateTranslate.from(result)
+                liveDataResult.value = viewState
             }
         }
     }
