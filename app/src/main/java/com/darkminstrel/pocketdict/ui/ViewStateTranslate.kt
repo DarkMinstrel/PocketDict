@@ -2,6 +2,7 @@ package com.darkminstrel.pocketdict.ui
 
 import com.darkminstrel.pocketdict.api.ApiResult
 import com.darkminstrel.pocketdict.api.ResponseTranslate
+import com.darkminstrel.pocketdict.data.ErrorTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import retrofit2.HttpException
 
@@ -9,7 +10,7 @@ sealed class ViewStateTranslate {
     object Empty:ViewStateTranslate()
     object Progress:ViewStateTranslate()
     data class Data(val translation: ParsedTranslation):ViewStateTranslate()
-    data class Error(val errorMessage:String):ViewStateTranslate()
+    data class Error(val error:ErrorTranslation):ViewStateTranslate()
 
     companion object {
         fun from(apiResult: ApiResult<ResponseTranslate>):ViewStateTranslate {
@@ -17,19 +18,19 @@ sealed class ViewStateTranslate {
                 is ApiResult.Success -> {
                     val response = apiResult.value
                     if(response.error && response.message!=null) {
-                        Error(response.message) //internal error
+                        Error(ErrorTranslation.ErrorTranslationServer(response.message))
                     }
                     val parsed = ParsedTranslation.from(response)
                     parsed?.let { Data(it)}
-                        ?: Error("No translations found")  //TODO
+                        ?: Error(ErrorTranslation.ErrorTranslationEmpty)
                 }
                 is ApiResult.Error -> {
                     when(apiResult.error){
                         is HttpException -> {
                             val code = apiResult.error.code()
-                            Error("HTTP error, code $code") //TODO
+                            Error(ErrorTranslation.ErrorTranslationHttp(code))
                         }
-                        else -> Error("Network error") //TODO
+                        else -> Error(ErrorTranslation.ErrorTranslationNetwork)
                     }
                 }
             }

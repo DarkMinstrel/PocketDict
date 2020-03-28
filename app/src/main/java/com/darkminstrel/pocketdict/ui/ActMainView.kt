@@ -104,7 +104,7 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
         recyclerView.visibility = if(viewState is ViewStateTranslate.Empty) View.VISIBLE else View.INVISIBLE
 
         if(viewState is ViewStateTranslate.Error){
-            tvError.text = viewState.errorMessage
+            tvError.text = viewState.error.getMessage(tvError.context)
         }else if(viewState is ViewStateTranslate.Data){
             searchView.clearFocus()
             vhData.setData(viewState.translation)
