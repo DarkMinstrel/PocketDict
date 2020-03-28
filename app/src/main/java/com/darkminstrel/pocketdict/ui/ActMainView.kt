@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
+import com.darkminstrel.pocketdict.trimQuery
 import java.util.*
 
 
@@ -45,10 +46,11 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
     private val queryTextListener = object: SearchView.OnQueryTextListener {
         override fun onQueryTextChange(newText: String):Boolean {
             vm.clearSearch()
+            adapterRecent.setQuery(trimQuery(newText))
             return false
         }
         override fun onQueryTextSubmit(query: String): Boolean {
-            vm.onQuerySubmit(query.trim().toLowerCase(Locale.getDefault()))
+            vm.onQuerySubmit(trimQuery(query))
             return true
         }
     }
@@ -98,8 +100,10 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
     fun onResume() {
         searchViewEditText?.selectAll()
         searchView.requestFocus()
-        //must be called after restoring instance state
+
+        //following lines must be called after restoring instance state
         searchView.setOnQueryTextListener(this.queryTextListener)
+        adapterRecent.setQuery(trimQuery(searchView.query.toString()))
     }
 
     fun onPause(){

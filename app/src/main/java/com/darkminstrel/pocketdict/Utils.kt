@@ -5,10 +5,16 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.text.Html
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.util.TypedValue
+import androidx.annotation.AttrRes
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.util.*
 
 fun DBG(s:Any?){
     if(BuildConfig.DEBUG_FEATURES) Log.d("FLIODBG", s.toString())
@@ -30,6 +36,28 @@ fun convertHtml(s:String):CharSequence{
         Html.fromHtml(s)
     }
 }
+
+fun trimQuery(query:String) = query.trim().toLowerCase(Locale.getDefault())
+
+fun getAttrColor(context: Context, @AttrRes attrRes: Int): Int {
+    val typedValue = TypedValue()
+    context.theme.resolveAttribute (attrRes, typedValue, true)
+    return typedValue.data
+}
+
+fun colorize(context:Context, text: String, constraintLower: String): CharSequence {
+    if (text.isEmpty()) return text
+    if (constraintLower.isEmpty()) return text
+    val textLower = text.toLowerCase(Locale.US)
+    if (textLower.length != text.length) return text //Izmir issue
+    val highlightIndex = textLower.indexOf(constraintLower)
+    if (highlightIndex == -1) return text
+    val ssb = SpannableStringBuilder(text)
+    val colorSpan = ForegroundColorSpan(getAttrColor(context, R.attr.colorPrimary))
+    ssb.setSpan(colorSpan, highlightIndex, highlightIndex + constraintLower.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    return ssb
+}
+
 
 fun getClipboardText(context:Context):String? {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
