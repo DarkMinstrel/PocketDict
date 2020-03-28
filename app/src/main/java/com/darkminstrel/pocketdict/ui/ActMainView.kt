@@ -14,6 +14,7 @@ import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
 import java.util.*
 
+
 class ActMainView(private val rootView: View, window: Window, private val vm: ActMainViewModel){
     private val scrollView = rootView.findViewById<ScrollView>(R.id.scrollView)
     private val containerOutput = rootView.findViewById<View>(R.id.containerOutput)
@@ -83,13 +84,17 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
      */
 
     fun tryClear():Boolean{
-        if(searchView.query.isNotEmpty()) {
+        return if(searchView.query.isNotEmpty()) {
             vm.clearSearch()
             searchView.setQuery("", false)
             searchView.requestFocus()
-            return true
-        }else return false
+            //hack to force show keyboard
+            searchView.setIconified(true)
+            searchView.setIconified(false)
+            true
+        }else false
     }
+
 
     fun onResume() {
         searchViewEditText?.selectAll()
@@ -107,6 +112,7 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
             tvError.text = viewState.error.getMessage(tvError.context)
         }else if(viewState is ViewStateTranslate.Data){
             searchView.clearFocus()
+            scrollView.scrollTo(0,0)
             vhData.setData(viewState.translation)
         }
     }
