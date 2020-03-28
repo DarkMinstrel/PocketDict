@@ -121,6 +121,7 @@
             android:importantForAutofill="no"
             android:inputType="text"
             android:selectAllOnFocus="true"
+            android:imeOptions="flagNoExtractUi"
             app:iconifiedByDefault="false"
             app:queryHint="@string/enterAWordHere"
             app:searchIcon="@null" />

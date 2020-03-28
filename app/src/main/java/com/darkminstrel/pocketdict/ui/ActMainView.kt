@@ -28,19 +28,7 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
         adapter = adapterRecent
     }
 
-    private val searchView = rootView.findViewById<SearchView>(R.id.searchView).apply {
-        setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String):Boolean {
-                vm.clearSearch()
-                return false
-            }
-            override fun onQueryTextSubmit(query: String): Boolean {
-                vm.onQuerySubmit(query.trim().toLowerCase(Locale.getDefault()))
-                return true
-            }
-        })
-        //setQuery("hamster", true)   //TODO kill
-    }
+    private val searchView = rootView.findViewById<SearchView>(R.id.searchView)
     private val searchViewEditText:AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
     }
@@ -51,6 +39,17 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
             //setupInsets()
         }else{
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
+    }
+
+    private val queryTextListener = object: SearchView.OnQueryTextListener {
+        override fun onQueryTextChange(newText: String):Boolean {
+            vm.clearSearch()
+            return false
+        }
+        override fun onQueryTextSubmit(query: String): Boolean {
+            vm.onQuerySubmit(query.trim().toLowerCase(Locale.getDefault()))
+            return true
         }
     }
 
@@ -89,8 +88,8 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
             searchView.setQuery("", false)
             searchView.requestFocus()
             //hack to force show keyboard
-            searchView.setIconified(true)
-            searchView.setIconified(false)
+            searchView.isIconified = true
+            searchView.isIconified = false
             true
         }else false
     }
@@ -99,6 +98,12 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
     fun onResume() {
         searchViewEditText?.selectAll()
         searchView.requestFocus()
+        //must be called after restoring instance state
+        searchView.setOnQueryTextListener(this.queryTextListener)
+    }
+
+    fun onPause(){
+        searchView.setOnQueryTextListener(null)
     }
 
     fun setViewState(viewState: ViewStateTranslate) {

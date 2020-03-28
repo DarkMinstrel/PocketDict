@@ -20,6 +20,11 @@ class ActMain : AppCompatActivity() {
         vm.getLiveDataCacheKeys().observe(this, Observer { keys -> vh.setCacheKeys(keys) })
     }
 
+    override fun onPause() {
+        super.onPause()
+        vh.onPause()
+    }
+
     override fun onResume() {
         super.onResume()
         vh.onResume()
@@ -28,6 +33,8 @@ class ActMain : AppCompatActivity() {
     override fun onBackPressed() {
         if(!vh.tryClear()) super.onBackPressed()
     }
+
+
 }
 
 
