@@ -31,11 +31,6 @@ class FrgList: FrgBase(R.layout.frg_list) {
         view?.onResume()
     }
 
-    override fun onPause() {
-        view?.onPause()
-        super.onPause()
-    }
-
     override fun onDestroyView() {
         view = null
         super.onDestroyView()

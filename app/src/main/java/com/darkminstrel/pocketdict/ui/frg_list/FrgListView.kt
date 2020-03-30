@@ -31,6 +31,7 @@ class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit)
     private val queryTextListener = object: SearchView.OnQueryTextListener {
         override fun onQueryTextChange(newText: String):Boolean {
             adapterFavorites.setQuery(trimQuery(newText))
+            recyclerView.scrollTo(0, 0)
             return false
         }
         override fun onQueryTextSubmit(query: String): Boolean {
@@ -39,30 +40,13 @@ class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit)
         }
     }
 
-    //TODO kill?
-//    fun tryClear():Boolean{
-//        return if(searchView.query.isNotEmpty()) {
-//            vm.clearSearch()
-//            searchView.setQuery("", false)
-//            searchView.requestFocus()
-//            //hack to force show keyboard
-//            searchView.isIconified = true
-//            searchView.isIconified = false
-//            true
-//        }else false
-//    }
+    init {
+        searchView.setOnQueryTextListener(queryTextListener)
+    }
 
     fun onResume() {
         searchViewEditText?.selectAll()
         searchView.requestFocus()
-
-        //following lines must be called after restoring instance state
-        searchView.setOnQueryTextListener(this.queryTextListener)
-        adapterFavorites.setQuery(trimQuery(searchView.query.toString()))
-    }
-
-    fun onPause(){
-        searchView.setOnQueryTextListener(null)
     }
 
     fun setKeys(keys:List<String>) = adapterFavorites.setKeys(keys)
