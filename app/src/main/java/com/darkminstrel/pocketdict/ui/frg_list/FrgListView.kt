@@ -1,6 +1,8 @@
 package com.darkminstrel.pocketdict.ui.frg_list
 
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.trimQuery
 
-class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit) {
 
+class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit) {
+    private val imm = rootView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     private val searchView = rootView.findViewById<SearchView>(R.id.searchView)
     private val searchViewEditText: AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
@@ -42,6 +45,9 @@ class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit)
 
     init {
         searchView.setOnQueryTextListener(queryTextListener)
+        searchViewEditText?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) imm?.showSoftInput(v, 0)
+        }
     }
 
     fun onResume() {
