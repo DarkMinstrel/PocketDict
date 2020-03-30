@@ -6,6 +6,8 @@ import com.darkminstrel.pocketdict.database.DatabaseRoom
 import com.darkminstrel.pocketdict.database.Databaseable
 import com.darkminstrel.pocketdict.ui.ActMainViewModel
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.android.viewmodel.dsl.viewModel
@@ -21,8 +23,9 @@ class App: Application() {
 
     private fun setupKoin(): KoinApplication {
         val appModule = module {
-            single{ ApiImpl().makeRetrofitService() }
-            single{ DatabaseRoom(get()) }
+            single{ Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
+            single{ ApiImpl().makeRetrofitService(get()) }
+            single{ DatabaseRoom(get(), get()) as Databaseable }
         }
         val usecaseModule = module {
             factory{ UsecaseTranslate(get(), get()) }

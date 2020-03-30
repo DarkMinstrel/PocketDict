@@ -9,6 +9,8 @@ import com.darkminstrel.pocketdict.ui.ViewStateTranslate
 
 class UsecaseTranslate(private val api: ApiInterface, private val db: Databaseable) {
 
+    fun getFavoriteKeys() = db.getAllKeys()
+
     suspend fun getTranslation(query: String):ViewStateTranslate {
         val favorite = db.get(query)
         return if(favorite!=null){
@@ -21,8 +23,6 @@ class UsecaseTranslate(private val api: ApiInterface, private val db: Databaseab
     }
 
     suspend fun getFavorite(key:String):ParsedTranslation? = db.get(key)
-
-    suspend fun getFavoriteKeys() = db.getAllKeys()
 
     suspend fun setFavorite(translation:ParsedTranslation, isFavorite:Boolean){
         if(isFavorite) db.put(translation.source, translation)

@@ -1,15 +1,16 @@
 package com.darkminstrel.pocketdict.api
 
+import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 private const val BASE_URL = "https://cps.reverso.net/"
 
 class ApiImpl {
-    fun makeRetrofitService(): ApiInterface {
+    fun makeRetrofitService(moshi: Moshi): ApiInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build().create(ApiInterface::class.java)
     }
 

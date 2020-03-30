@@ -12,14 +12,7 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
     private val liveDataViewState = MutableLiveData<ViewStateTranslate>().apply { value = ViewStateTranslate.Empty }
     fun getLiveDataViewState() = liveDataViewState as LiveData<ViewStateTranslate>
 
-    private val liveDataCacheKeys = MutableLiveData<List<String>>()
-    fun getLiveDataCacheKeys() = liveDataCacheKeys as LiveData<List<String>>
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            liveDataCacheKeys.postValue(usecase.getFavoriteKeys())
-        }
-    }
+    fun getLiveDataCacheKeys() = usecase.getFavoriteKeys()
 
     private var job: Job? = null
 
@@ -41,7 +34,6 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
     fun onChangeFavoriteStatus(translation: ParsedTranslation, isFavorite:Boolean){
         CoroutineScope(Dispatchers.IO).launch {
             usecase.setFavorite(translation, isFavorite)
-            if(isActive) liveDataCacheKeys.postValue(usecase.getFavoriteKeys())
         }
     }
 

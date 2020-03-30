@@ -1,12 +1,13 @@
 package com.darkminstrel.pocketdict.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 
 @Dao
 interface RoomDao {
     @Query("SELECT `key` FROM RoomEntity ORDER BY `rowid` DESC")
-    fun getAllKeys(): List<String>
+    fun getAllKeys(): LiveData<List<String>>
 
     @Query("INSERT INTO RoomEntity (`key`,`value`) VALUES (:key, :value)")
     fun put(key:String, value:String)
