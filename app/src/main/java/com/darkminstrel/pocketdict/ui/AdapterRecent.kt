@@ -3,7 +3,6 @@ package com.darkminstrel.pocketdict.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.colorize
 import kotlinx.coroutines.*
@@ -52,11 +51,10 @@ class AdapterRecent(private val vm:ActMainViewModel, private val onClickListener
         (holder.itemView.tag as? Job)?.cancel()
         jobsMap[holder]?.cancel()
         jobsMap[holder] = CoroutineScope(Dispatchers.IO).launch {
-            val description = vm.getCachedTranslation(key)?.getDescription()
+            val description = vm.getFavorite(key)?.getDescription()
             withContext(Dispatchers.Main){
                 if(isActive) {
                     holder.setTexts(keyColorized, description?:"")
-                    holder.animateAlpha()
                 }
             }
         }
