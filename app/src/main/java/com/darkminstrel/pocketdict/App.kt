@@ -22,7 +22,7 @@ class App: Application() {
     private fun setupKoin(): KoinApplication {
         val appModule = module {
             single{ ApiImpl().makeRetrofitService() }
-            single{ DatabaseRoom(get()) as Databaseable }
+            single{ DatabaseRoom(get()) }
         }
         val usecaseModule = module {
             factory{ UsecaseTranslate(get(), get()) }
