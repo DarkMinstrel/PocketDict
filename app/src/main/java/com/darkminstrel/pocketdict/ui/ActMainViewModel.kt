@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
+import com.darkminstrel.pocketdict.usecases.ViewStateTranslate
 import kotlinx.coroutines.*
 
 class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
@@ -19,7 +20,7 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
     fun clearSearch(){
         job?.cancel()
         job = null
-        if(liveDataViewState.value!=ViewStateTranslate.Empty) liveDataViewState.value = ViewStateTranslate.Empty
+        if(liveDataViewState.value!= ViewStateTranslate.Empty) liveDataViewState.value = ViewStateTranslate.Empty
     }
 
     fun onQuerySubmit(query: String) {

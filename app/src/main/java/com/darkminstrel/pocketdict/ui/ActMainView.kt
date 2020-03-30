@@ -13,7 +13,7 @@ import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.trimQuery
-import java.util.*
+import com.darkminstrel.pocketdict.usecases.ViewStateTranslate
 
 
 class ActMainView(private val rootView: View, window: Window, private val vm: ActMainViewModel){
