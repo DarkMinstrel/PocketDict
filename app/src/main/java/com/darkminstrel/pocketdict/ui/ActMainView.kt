@@ -27,6 +27,13 @@ class ActMainView(private val rootView: View, window: Window, private val vm: Ac
     private val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView).apply {
         layoutManager = LinearLayoutManager(context)
         adapter = adapterRecent
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int){
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    searchView.clearFocus()
+                }
+            }
+        })
     }
 
     private val searchView = rootView.findViewById<SearchView>(R.id.searchView)
