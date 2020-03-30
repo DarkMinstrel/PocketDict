@@ -1,27 +1,19 @@
-package com.darkminstrel.pocketdict.ui
+package com.darkminstrel.pocketdict.ui.frg_details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
-import com.darkminstrel.pocketdict.usecases.ViewStateTranslate
+import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import kotlinx.coroutines.*
 
-class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
+class FrgDetailsViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
 
-    private val liveDataViewState = MutableLiveData<ViewStateTranslate>().apply { value = ViewStateTranslate.Empty }
+    private val liveDataViewState = MutableLiveData<ViewStateTranslate>()
     fun getLiveDataViewState() = liveDataViewState as LiveData<ViewStateTranslate>
 
-    fun getLiveDataCacheKeys() = usecase.getFavoriteKeys()
-
     private var job: Job? = null
-
-    fun clearSearch(){
-        job?.cancel()
-        job = null
-        if(liveDataViewState.value!= ViewStateTranslate.Empty) liveDataViewState.value = ViewStateTranslate.Empty
-    }
 
     fun onQuerySubmit(query: String) {
         liveDataViewState.value = ViewStateTranslate.Progress
@@ -38,11 +30,12 @@ class ActMainViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
         }
     }
 
-    suspend fun getFavorite(key:String) = usecase.getFavorite(key)
+    fun getLiveDataCacheKeys() = usecase.getFavoriteKeys()
 
     override fun onCleared() {
         job?.cancel()
         job = null
         super.onCleared()
     }
+
 }

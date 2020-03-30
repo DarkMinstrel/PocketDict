@@ -18,6 +18,7 @@ data class ParsedTranslation(
     val items:List<ParsedTranslationItem>
 ){
     companion object {
+
         fun from(response:ResponseTranslate):ParsedTranslation?{
             if(!response.success || response.sources.isNullOrEmpty()) return null
             val source = response.sources.first()
@@ -37,6 +38,7 @@ data class ParsedTranslation(
         }
 
         private fun reformatHtml(s:String):String = s.replace("<em>","<b>").replace("</em>","</b>")
+
     }
 
     fun getDescription():String {

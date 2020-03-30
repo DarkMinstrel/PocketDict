@@ -1,4 +1,4 @@
-package com.darkminstrel.pocketdict.ui
+package com.darkminstrel.pocketdict.ui.frg_list
 
 import android.util.LruCache
 import android.view.LayoutInflater
@@ -7,18 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.colorize
 import com.darkminstrel.pocketdict.data.ParsedTranslation
+import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdapterRecent(private val vm:ActMainViewModel, private val onClickListener: (String)->Unit): RecyclerView.Adapter<ViewHolderTextPair>() {
+class AdapterFavorites(private val vm: FrgListViewModel, private val onClickListener: (String)->Unit): RecyclerView.Adapter<ViewHolderTextPair>() {
     private var query = ""
     private val allKeys = ArrayList<String>()
     private val filteredKeys = ArrayList<String>()
     private val jobsMap = IdentityHashMap<ViewHolderTextPair, Job>()
     private val cache = LruCache<String, ParsedTranslation>(30)
 
-    fun setCacheKeys(keys:List<String>){
+    fun setKeys(keys:List<String>){
         this.allKeys.clear()
         this.allKeys.addAll(keys)
         refresh()
@@ -46,20 +47,20 @@ class AdapterRecent(private val vm:ActMainViewModel, private val onClickListener
 
     override fun onBindViewHolder(holder: ViewHolderTextPair, position: Int) {
         val key = filteredKeys[position]
+        val keyColorized = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
         holder.itemView.setOnClickListener { onClickListener.invoke(key) }
 
         jobsMap[holder]?.cancel()
-        holder.tv1.text = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
         cache.get(key)?.let{
-            holder.tv2.text = it.getDescription()
+            holder.setTexts(keyColorized, it.getDescription())
         } ?: run {
-            holder.tv2.text = ""
+            holder.setTexts("", "")
             jobsMap[holder] = CoroutineScope(Dispatchers.IO).launch {
                 val translation = vm.getFavorite(key)
                 withContext(Dispatchers.Main){
                     translation?.let{
                         cache.put(key, translation)
-                        if(isActive) holder.tv2.text = it.getDescription()
+                        if(isActive) holder.setTexts(keyColorized, it.getDescription())
                     }
                 }
             }

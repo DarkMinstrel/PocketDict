@@ -4,6 +4,7 @@ import com.darkminstrel.pocketdict.api.ApiInterface
 import com.darkminstrel.pocketdict.api.ApiResult
 import com.darkminstrel.pocketdict.api.RequestTranslate
 import com.darkminstrel.pocketdict.data.ParsedTranslation
+import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import com.darkminstrel.pocketdict.database.Databaseable
 
 class UsecaseTranslate(private val api: ApiInterface, private val db: Databaseable) {

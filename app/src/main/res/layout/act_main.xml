@@ -1,131 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ActMain">
 
-    <FrameLayout
-        android:id="@+id/containerOutput"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/containerFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/containerInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"/>
-
-        <TextView
-            android:id="@+id/tvError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:drawableTop="@drawable/ic_launcher_foreground"
-            android:drawablePadding="16dp"
-            tools:text="Error message"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/containerData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginStart="@dimen/margin_horizontal"
-                    android:layout_marginEnd="@dimen/margin_horizontal"
-                    >
-                    <com.darkminstrel.pocketdict.ui.views.CheckableImageView
-                        android:id="@+id/cbFavorite"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:scaleType="center"
-                        android:checked="true"
-                        android:src="@drawable/ic_star_selector"
-                        />
-                    <TextView
-                        android:id="@+id/tvWordSource"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@+id/cbFavorite"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                        android:textStyle="bold"
-                        tools:text="apple"/>
-                </RelativeLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?attr/colorDivider"
-                    />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginStart="@dimen/margin_horizontal"
-                    android:layout_marginEnd="@dimen/margin_horizontal"
-                    app:chipSpacingVertical="8dp"
-                    app:singleSelection="true"/>
-
-                <LinearLayout
-                    android:id="@+id/containerTranslations"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal"
-                    android:layout_marginEnd="@dimen/margin_horizontal"
-                    android:orientation="vertical" />
-
-            </LinearLayout>
-        </ScrollView>
-    </FrameLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/containerInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:selectAllOnFocus="true"
-            android:imeOptions="flagNoExtractUi"
-            app:iconifiedByDefault="false"
-            app:queryHint="@string/enterAWordHere"
-            app:searchIcon="@null" />
-
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

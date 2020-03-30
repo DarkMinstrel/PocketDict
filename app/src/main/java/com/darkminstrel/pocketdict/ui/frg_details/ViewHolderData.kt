@@ -1,4 +1,4 @@
-package com.darkminstrel.pocketdict.ui
+package com.darkminstrel.pocketdict.ui.frg_details
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +9,12 @@ import com.darkminstrel.pocketdict.convertHtml
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.findCheckedChip
+import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.CheckableImageView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-class ViewHolderData(rootView:ViewGroup, private val vm:ActMainViewModel) {
+class ViewHolderData(rootView:ViewGroup, private val vm: FrgDetailsViewModel) {
     private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
     private val cbFavorite = rootView.findViewById<CheckableImageView>(R.id.cbFavorite)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
@@ -58,7 +59,7 @@ class ViewHolderData(rootView:ViewGroup, private val vm:ActMainViewModel) {
         chipGroup.clearCheck()
     }
 
-    fun setCacheKeys(keys:List<String>){
+    fun setKeys(keys:List<String>){
         this.keys = keys
         updateFavoriteButton()
     }
