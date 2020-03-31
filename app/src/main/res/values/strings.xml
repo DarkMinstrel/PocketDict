@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">PocketDict</string>
+    <string name="appName">PocketDict</string>
 
     <string name="enterAWordHere">Enter a word here</string>
+    <string name="favoriteTranslations">Favorite translations</string>
 
     <string name="errorHttp" formatted="false">Server error (code %d)</string>
     <string name="errorEmpty">No translations found</string>
