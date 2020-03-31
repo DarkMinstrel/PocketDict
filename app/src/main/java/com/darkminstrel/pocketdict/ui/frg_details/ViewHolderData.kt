@@ -1,5 +1,6 @@
 package com.darkminstrel.pocketdict.ui.frg_details
 
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,8 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
                 cbFavorite.scaleX = 1.0f
                 cbFavorite.scaleY = 1.0f
                 cbFavorite.animate().scaleX(1.2f).scaleY(1.2f).setInterpolator(BeatInterpolator()).start()
+
+                cbFavorite.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
         }
     }
