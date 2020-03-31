@@ -31,4 +31,8 @@ class FrgDetailsView(rootView: View, vm:FrgDetailsViewModel) {
 
     fun setKeys(keys: List<String>) = vhData.setKeys(keys)
 
+    fun setUttering(isUttering: Boolean) {
+        vhData.setUttering(isUttering)
+    }
+
 }

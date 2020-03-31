@@ -3,12 +3,13 @@ package com.darkminstrel.pocketdict.ui.frg_details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import kotlinx.coroutines.*
 
-class FrgDetailsViewModel(private val usecase: UsecaseTranslate) : ViewModel() {
+class FrgDetailsViewModel(private val usecase: UsecaseTranslate, val ttsManager:TextToSpeechManager) : ViewModel() {
 
     private val liveDataViewState = MutableLiveData<ViewStateTranslate>()
     fun getLiveDataViewState() = liveDataViewState as LiveData<ViewStateTranslate>

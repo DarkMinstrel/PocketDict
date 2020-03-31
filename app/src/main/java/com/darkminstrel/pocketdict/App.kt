@@ -27,13 +27,14 @@ class App: Application() {
             single{ Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
             single{ ApiImpl().makeRetrofitService(get()) }
             single{ DatabaseRoom(get(), get()) as Databaseable }
+            single{ TextToSpeechManager(get()) }
         }
         val usecaseModule = module {
             factory{ UsecaseTranslate(get(), get()) }
         }
         val vmModule = module {
             viewModel{ FrgListViewModel(get()) }
-            viewModel{ FrgDetailsViewModel(get()) }
+            viewModel{ FrgDetailsViewModel(get(), get()) }
         }
 
         return startKoin {

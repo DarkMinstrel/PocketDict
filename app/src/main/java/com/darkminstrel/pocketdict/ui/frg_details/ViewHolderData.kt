@@ -1,15 +1,21 @@
 package com.darkminstrel.pocketdict.ui.frg_details
 
+import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.AnimationDrawable
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.convertHtml
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.findCheckedChip
+import com.darkminstrel.pocketdict.setTintFromAttr
 import com.darkminstrel.pocketdict.ui.BeatInterpolator
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.CheckableImageView
@@ -21,6 +27,7 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
     private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
     private val cbFavorite = rootView.findViewById<CheckableImageView>(R.id.cbFavorite)
+    private val btnSpeak = rootView.findViewById<ImageView>(R.id.btnSpeak)
     private val inflater = LayoutInflater.from(chipGroup.context)
 
     init {
@@ -50,6 +57,16 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
                 cbFavorite.animate().scaleX(1.2f).scaleY(1.2f).setInterpolator(BeatInterpolator()).start()
 
                 cbFavorite.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
+        }
+        btnSpeak.setOnClickListener {
+            parsed?.let{
+                val tts = vm.ttsManager
+                if(tts.isMuted()){
+                    Toast.makeText(rootView.context, R.string.deviceIsMuted, Toast.LENGTH_SHORT).show()
+                }else{
+                    tts.speak(it.source, "en")  //TODO
+                }
             }
         }
     }
@@ -83,5 +100,12 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private fun updateFavoriteButton(){
         cbFavorite.isEnabled = true
         cbFavorite.isChecked = keys?.contains(parsed?.source) == true
+    }
+
+    fun setUttering(isUttering: Boolean) {
+        val drawable = btnSpeak.context.getDrawable(if(isUttering) R.drawable.ic_volume_animated else R.drawable.ic_volume_2_24px)
+        btnSpeak.setImageDrawable(drawable)
+        btnSpeak.setTintFromAttr(if(isUttering) R.attr.colorSecondary else android.R.attr.textColorPrimary)
+        if(drawable is AnimationDrawable) drawable.start()
     }
 }

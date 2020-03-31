@@ -55,9 +55,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/btnSpeak"
+                        android:layout_centerVertical="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textStyle="bold"
                         tools:text="apple" />
+
+                    <ImageView
+                        android:id="@+id/btnSpeak"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="center"
+                        android:tint="?colorPrimary"
+                        android:src="@drawable/ic_volume_animated"
+                        android:contentDescription="@string/pronounce" />
 
                 </RelativeLayout>
 
