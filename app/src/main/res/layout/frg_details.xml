@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -55,23 +54,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@+id/btnSpeak"
                         android:layout_centerVertical="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textStyle="bold"
                         tools:text="apple" />
-
-                    <ImageView
-                        android:id="@+id/btnSpeak"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:scaleType="center"
-                        android:tint="?colorPrimary"
-                        android:src="@drawable/ic_volume_animated"
-                        android:contentDescription="@string/pronounce" />
 
                 </RelativeLayout>
 
@@ -112,16 +98,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.darkminstrel.pocketdict.ui.views.CheckableImageView
-            android:id="@+id/cbFavorite"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:background="?selectableItemBackground"
-            android:checked="true"
-            android:scaleType="center"
-            android:src="@drawable/ic_favorite_selector" />
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/btnSpeak"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackground"
+                android:contentDescription="@string/pronounce"
+                android:scaleType="center"
+                android:src="@drawable/ic_volume_animated"
+                android:tint="?android:attr/textColorPrimary" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="?colorDivider" />
+
+            <com.darkminstrel.pocketdict.ui.views.CheckableImageView
+                android:id="@+id/cbFavorite"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?selectableItemBackground"
+                android:checked="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_favorite_selector" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

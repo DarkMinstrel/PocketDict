@@ -19,8 +19,9 @@ class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit)
     }
 
     private val adapterFavorites = AdapterFavorites(vm, onSubmit)
+    private val linearLayoutManager = LinearLayoutManager(rootView.context)
     private val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView).apply {
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = linearLayoutManager
         adapter = adapterFavorites
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int){
@@ -35,6 +36,7 @@ class FrgListView(rootView: View, vm: FrgListViewModel, onSubmit:(String)->Unit)
         override fun onQueryTextChange(newText: String):Boolean {
             adapterFavorites.setQuery(trimQuery(newText))
             recyclerView.scrollTo(0, 0)
+            linearLayoutManager.scrollToPositionWithOffset(0, 0)
             return false
         }
         override fun onQueryTextSubmit(query: String): Boolean {
