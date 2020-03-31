@@ -9,6 +9,7 @@ import com.darkminstrel.pocketdict.convertHtml
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.findCheckedChip
+import com.darkminstrel.pocketdict.ui.BeatInterpolator
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.CheckableImageView
 import com.google.android.material.chip.Chip
@@ -34,6 +35,18 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
                         containerTranslations.addView(view)
                     }
                 }
+            }
+        }
+        cbFavorite.setOnClickListener {
+            parsed?.let{
+                cbFavorite.isEnabled = false
+                vm.onChangeFavoriteStatus(it, !cbFavorite.isChecked)
+                cbFavorite.toggle()
+
+                cbFavorite.animate().cancel()
+                cbFavorite.scaleX = 1.0f
+                cbFavorite.scaleY = 1.0f
+                cbFavorite.animate().scaleX(1.2f).scaleY(1.2f).setInterpolator(BeatInterpolator()).start()
             }
         }
     }
@@ -67,12 +80,5 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private fun updateFavoriteButton(){
         cbFavorite.isEnabled = true
         cbFavorite.isChecked = keys?.contains(parsed?.source) == true
-        cbFavorite.setOnClickListener {
-            parsed?.let{
-                cbFavorite.isEnabled = false
-                vm.onChangeFavoriteStatus(it, !cbFavorite.isChecked)
-                cbFavorite.toggle()
-            }
-        }
     }
 }
