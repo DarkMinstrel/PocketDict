@@ -11,13 +11,15 @@ class FrgDetailsView(rootView: View, vm:FrgDetailsViewModel) {
     private val scrollView = rootView.findViewById<ScrollView>(R.id.scrollView)
     private val progressBar = rootView.findViewById<View>(R.id.progressBar)
     private val tvError = rootView.findViewById<TextView>(R.id.tvError)
-    private val vhData = ViewHolderData(rootView.findViewById(R.id.containerData), vm)
+    private val containerMenu = rootView.findViewById<View>(R.id.containerMenu)
+    private val vhData = ViewHolderData(rootView, vm)
 
     fun setViewState(viewState: ViewStateTranslate) {
         DBG("View state: ${viewState.javaClass.simpleName}")
         progressBar.visibility = if(viewState is ViewStateTranslate.Progress) View.VISIBLE else View.INVISIBLE
         tvError.visibility = if(viewState is ViewStateTranslate.Error) View.VISIBLE else View.INVISIBLE
         scrollView.visibility = if(viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
+        containerMenu.visibility = if(viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
 
         if(viewState is ViewStateTranslate.Error){
             tvError.text = viewState.error.getMessage(tvError.context)

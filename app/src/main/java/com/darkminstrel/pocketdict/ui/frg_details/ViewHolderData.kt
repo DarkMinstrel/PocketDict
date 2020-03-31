@@ -14,11 +14,11 @@ import com.darkminstrel.pocketdict.ui.views.CheckableImageView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-class ViewHolderData(rootView:ViewGroup, private val vm: FrgDetailsViewModel) {
+class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
-    private val cbFavorite = rootView.findViewById<CheckableImageView>(R.id.cbFavorite)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
     private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
+    private val cbFavorite = rootView.findViewById<CheckableImageView>(R.id.cbFavorite)
     private val inflater = LayoutInflater.from(chipGroup.context)
 
     init {
