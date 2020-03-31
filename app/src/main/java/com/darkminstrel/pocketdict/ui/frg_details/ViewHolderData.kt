@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
-import com.darkminstrel.pocketdict.ui.BeatInterpolator
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
-import com.darkminstrel.pocketdict.ui.views.CheckableImageView
+import com.darkminstrel.pocketdict.ui.views.FavoriteButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
@@ -23,7 +21,7 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
     private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
-    private val cbFavorite = rootView.findViewById<CheckableImageView>(R.id.cbFavorite)
+    private val cbFavorite = rootView.findViewById<FavoriteButton>(R.id.cbFavorite)
     private val btnSpeak = rootView.findViewById<ImageView>(R.id.btnSpeak)
     private val inflater = LayoutInflater.from(chipGroup.context)
 
@@ -45,15 +43,9 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
         cbFavorite.setOnClickListener {
             parsed?.let{
                 cbFavorite.isEnabled = false
-                vm.onChangeFavoriteStatus(it, !cbFavorite.isChecked)
+                vm.onChangeFavoriteStatus(it, !cbFavorite.isChecked())
                 cbFavorite.toggle()
-
-                cbFavorite.animate().cancel()
-                cbFavorite.scaleX = 1.0f
-                cbFavorite.scaleY = 1.0f
-                cbFavorite.animate().scaleX(1.2f).scaleY(1.2f).setInterpolator(BeatInterpolator()).start()
-
-                cbFavorite.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                cbFavorite.beat()
             }
         }
         btnSpeak.setOnClickListener {
@@ -95,8 +87,8 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     }
 
     private fun updateFavoriteButton(){
-        cbFavorite.isEnabled = true
-        cbFavorite.isChecked = keys?.contains(parsed?.source) == true
+        cbFavorite.isEnabled = keys!=null
+        cbFavorite.setChecked(keys?.contains(parsed?.source) == true)
     }
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {

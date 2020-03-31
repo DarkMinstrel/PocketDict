@@ -119,15 +119,13 @@
                 android:layout_height="match_parent"
                 android:background="?colorDivider" />
 
-            <com.darkminstrel.pocketdict.ui.views.CheckableImageView
+            <com.darkminstrel.pocketdict.ui.views.FavoriteButton
                 android:id="@+id/cbFavorite"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?selectableItemBackground"
-                android:checked="true"
-                android:scaleType="center"
-                android:src="@drawable/ic_favorite_selector" />
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
