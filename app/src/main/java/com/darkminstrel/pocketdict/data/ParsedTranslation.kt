@@ -14,6 +14,8 @@ data class ParsedTranslationItem (
 
 data class ParsedTranslation(
     val source:String,
+    val langFrom:String,
+    val langTo:String,
     val defaultContexts:List<TranslationPair>?,
     val items:List<ParsedTranslationItem>
 ){
@@ -34,7 +36,7 @@ data class ParsedTranslation(
                     items.add(ParsedTranslationItem(translation.translation, list))
                 }
             }
-            return ParsedTranslation(source.source, defaultContexts, items)
+            return ParsedTranslation(source.source, source.directionFrom, source.directionTo, defaultContexts, items)
         }
 
         private fun reformatHtml(s:String):String = s.replace("<em>","<b>").replace("</em>","</b>")

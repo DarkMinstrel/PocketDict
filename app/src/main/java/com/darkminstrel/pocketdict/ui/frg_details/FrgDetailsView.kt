@@ -5,6 +5,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.darkminstrel.pocketdict.DBG
 import com.darkminstrel.pocketdict.R
+import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 
 class FrgDetailsView(rootView: View, vm:FrgDetailsViewModel) {
@@ -31,8 +32,8 @@ class FrgDetailsView(rootView: View, vm:FrgDetailsViewModel) {
 
     fun setKeys(keys: List<String>) = vhData.setKeys(keys)
 
-    fun setUttering(isUttering: Boolean) {
-        vhData.setUttering(isUttering)
+    fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {
+        vhData.setSpeechState(speechState)
     }
 
 }

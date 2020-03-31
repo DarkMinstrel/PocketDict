@@ -10,12 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.darkminstrel.pocketdict.R
-import com.darkminstrel.pocketdict.convertHtml
+import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
-import com.darkminstrel.pocketdict.findCheckedChip
-import com.darkminstrel.pocketdict.setTintFromAttr
 import com.darkminstrel.pocketdict.ui.BeatInterpolator
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.CheckableImageView
@@ -65,7 +62,7 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
                 if(tts.isMuted()){
                     Toast.makeText(rootView.context, R.string.deviceIsMuted, Toast.LENGTH_SHORT).show()
                 }else{
-                    tts.speak(it.source, "en")  //TODO
+                    tts.speak(it.source, it.langFrom)
                 }
             }
         }
@@ -102,10 +99,14 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
         cbFavorite.isChecked = keys?.contains(parsed?.source) == true
     }
 
-    fun setUttering(isUttering: Boolean) {
-        val drawable = btnSpeak.context.getDrawable(if(isUttering) R.drawable.ic_volume_animated else R.drawable.ic_volume_2_24px)
+    fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {
+        val drawable = btnSpeak.context.getDrawable(when(speechState){
+            TextToSpeechManager.SpeechState.UTTERING -> R.drawable.ic_volume_animated
+            TextToSpeechManager.SpeechState.LOADING -> R.drawable.ic_volume_1_24px
+            else -> R.drawable.ic_volume_2_24px
+        })
         btnSpeak.setImageDrawable(drawable)
-        btnSpeak.setTintFromAttr(if(isUttering) R.attr.colorSecondary else android.R.attr.textColorPrimary)
+        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorSecondary else android.R.attr.textColorPrimary)
         if(drawable is AnimationDrawable) drawable.start()
     }
 }

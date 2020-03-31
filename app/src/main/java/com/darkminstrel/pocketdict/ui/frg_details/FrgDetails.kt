@@ -35,7 +35,7 @@ class FrgDetails: FrgBase(R.layout.frg_details) {
         view = FrgDetailsView(rootView, vm)
         vm.getLiveDataViewState().observe(viewLifecycleOwner, Observer { viewState -> view?.setViewState(viewState) })
         vm.getLiveDataCacheKeys().observe(viewLifecycleOwner, Observer { keys -> view?.setKeys(keys) })
-        vm.ttsManager.getLiveDataUttering().observe(viewLifecycleOwner, Observer { view?.setUttering(it) })
+        vm.ttsManager.getLiveDataUttering().observe(viewLifecycleOwner, Observer { view?.setSpeechState(it) })
     }
 
     override fun onDestroyView() {
