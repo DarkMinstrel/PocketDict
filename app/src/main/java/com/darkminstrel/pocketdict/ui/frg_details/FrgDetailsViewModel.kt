@@ -14,6 +14,8 @@ class FrgDetailsViewModel(private val usecase: UsecaseTranslate, val ttsManager:
     private val liveDataViewState = MutableLiveData<ViewStateTranslate>()
     fun getLiveDataViewState() = liveDataViewState as LiveData<ViewStateTranslate>
 
+    fun getLiveDataCacheKeys() = usecase.getFavoriteKeys()
+
     private var job: Job? = null
 
     fun onQuerySubmit(query: String) {
@@ -30,8 +32,6 @@ class FrgDetailsViewModel(private val usecase: UsecaseTranslate, val ttsManager:
             usecase.setFavorite(translation, isFavorite)
         }
     }
-
-    fun getLiveDataCacheKeys() = usecase.getFavoriteKeys()
 
     override fun onCleared() {
         job?.cancel()

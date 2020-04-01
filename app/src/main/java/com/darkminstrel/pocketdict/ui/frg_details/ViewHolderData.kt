@@ -87,7 +87,7 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     }
 
     private fun updateFavoriteButton(){
-        cbFavorite.isEnabled = keys!=null
+        cbFavorite.isEnabled = keys!=null && parsed!=null
         cbFavorite.setChecked(keys?.contains(parsed?.source) == true)
     }
 
