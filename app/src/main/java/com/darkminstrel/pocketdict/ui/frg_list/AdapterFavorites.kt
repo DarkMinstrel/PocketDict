@@ -36,18 +36,21 @@ class AdapterFavorites(private val vm: FrgListViewModel, private val onClickList
     }
 
     private fun refresh(){
+        objects.clear()
         val filteredKeys = ArrayList<String>()
         if(query.isEmpty()) filteredKeys.addAll(allKeys)
         else{
             filteredKeys.addAll(allKeys.filter{ it.startsWith(query) })
             filteredKeys.addAll(allKeys.filter{ it.contains(query) }.subtract(filteredKeys))
         }
-        objects.clear()
-        if(filteredKeys.isEmpty()){
-            //TODO empty view
-        }else{
+        if(filteredKeys.isNotEmpty()) {
             objects.add(objectTitle)
             objects.addAll(filteredKeys)
+        }else if(filteredKeys.isEmpty() && allKeys.isNotEmpty()){
+            objects.add(objectTitle)
+            objects.addAll(allKeys)
+        }else{
+            //TODO empty view
         }
         notifyDataSetChanged() //TODO optimize
     }
