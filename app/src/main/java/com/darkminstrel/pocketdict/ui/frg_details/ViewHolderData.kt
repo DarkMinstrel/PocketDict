@@ -1,8 +1,6 @@
 package com.darkminstrel.pocketdict.ui.frg_details
 
-import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.AnimationDrawable
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,9 @@ import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.FavoriteButton
+import com.darkminstrel.pocketdict.utils.convertHtml
+import com.darkminstrel.pocketdict.utils.findCheckedChip
+import com.darkminstrel.pocketdict.utils.setTintFromAttr
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 

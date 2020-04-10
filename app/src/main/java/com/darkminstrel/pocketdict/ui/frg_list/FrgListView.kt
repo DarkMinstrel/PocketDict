@@ -8,7 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.R
-import com.darkminstrel.pocketdict.trimQuery
+import com.darkminstrel.pocketdict.utils.trimQuery
 import kotlinx.coroutines.CoroutineScope
 
 

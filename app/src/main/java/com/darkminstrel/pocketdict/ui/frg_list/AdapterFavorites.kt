@@ -8,6 +8,8 @@ import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.ui.views.ViewHolderText
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
+import com.darkminstrel.pocketdict.utils.assertUiThread
+import com.darkminstrel.pocketdict.utils.colorize
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -87,13 +89,10 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Fr
         } ?: run {
             holder.setTexts("", "")
             jobsMap[holder] = scopeView.launch {
-                withContext(Dispatchers.IO) {
-                    vm.getFavorite(key)?.let { translation ->
-                        withContext(Dispatchers.Main) {
-                            cache.put(key, translation)
-                            if (isActive) holder.setTexts(keyColorized, translation.getDescription())
-                        }
-                    }
+                vm.getFavorite(key)?.let { translation ->
+                    assertUiThread()
+                    cache.put(key, translation)
+                    if (isActive) holder.setTexts(keyColorized, translation.getDescription())
                 }
             }
         }

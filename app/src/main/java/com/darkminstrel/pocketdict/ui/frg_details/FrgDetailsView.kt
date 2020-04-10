@@ -3,7 +3,7 @@ package com.darkminstrel.pocketdict.ui.frg_details
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
-import com.darkminstrel.pocketdict.DBG
+import com.darkminstrel.pocketdict.utils.DBG
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
