@@ -1,29 +1,29 @@
-package com.darkminstrel.pocketdict.api
+package com.darkminstrel.pocketdict.api.reverso
 
-data class ResponseTranslateContext (
+data class ResponseReversoContext (
     val source:String,
     val target:String,
     val isGood:Boolean
 )
 
-data class ResponseTranslateTranslation (
+data class ResponseReversoTranslation (
     val translation:String,
     val isRude:Boolean,
     val isSlang:Boolean,
     val isFromDict:Boolean,
-    val contexts:List<ResponseTranslateContext>?
+    val contexts:List<ResponseReversoContext>?
 )
 
-data class ResponseTranslateSource(
+data class ResponseReversoSource(
     val source:String,
     val directionFrom:String,
     val directionTo:String,
-    val translations:List<ResponseTranslateTranslation>?
+    val translations:List<ResponseReversoTranslation>?
 )
 
-data class ResponseTranslate(
+data class ResponseReverso(
     val error:Boolean,
     val success:Boolean,
     val message:String?,
-    val sources:List<ResponseTranslateSource>?
+    val sources:List<ResponseReversoSource>?
 )

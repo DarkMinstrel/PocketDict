@@ -1,4 +1,4 @@
-package com.darkminstrel.pocketdict.database
+package com.darkminstrel.pocketdict.database.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

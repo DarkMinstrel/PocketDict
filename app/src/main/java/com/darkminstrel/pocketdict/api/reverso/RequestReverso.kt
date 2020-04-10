@@ -1,6 +1,6 @@
-package com.darkminstrel.pocketdict.api
+package com.darkminstrel.pocketdict.api.reverso
 
-data class RequestTranslate(
+data class RequestReverso(
     val deviceId: String = "",
     val origin: String = "",
     val uiLang: String,

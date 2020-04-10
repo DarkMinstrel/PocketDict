@@ -1,6 +1,6 @@
 package com.darkminstrel.pocketdict.data
 
-import com.darkminstrel.pocketdict.api.ResponseTranslate
+import com.darkminstrel.pocketdict.api.reverso.ResponseReverso
 
 data class TranslationPair(
     val first:String,
@@ -21,7 +21,7 @@ data class ParsedTranslation(
 ){
     companion object {
 
-        fun from(response:ResponseTranslate):ParsedTranslation?{
+        fun from(response: ResponseReverso):ParsedTranslation?{
             if(!response.success || response.sources.isNullOrEmpty()) return null
             val source = response.sources.first()
             if(source.translations.isNullOrEmpty()) return null

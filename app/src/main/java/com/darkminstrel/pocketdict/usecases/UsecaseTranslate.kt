@@ -1,7 +1,7 @@
 package com.darkminstrel.pocketdict.usecases
 
-import com.darkminstrel.pocketdict.api.ApiInterface
-import com.darkminstrel.pocketdict.api.RequestTranslate
+import com.darkminstrel.pocketdict.api.reverso.ApiReverso
+import com.darkminstrel.pocketdict.api.reverso.RequestReverso
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import com.darkminstrel.pocketdict.database.Databaseable
@@ -9,7 +9,7 @@ import com.darkminstrel.pocketdict.safeRun
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class UsecaseTranslate(private val api: ApiInterface, private val db: Databaseable) {
+class UsecaseTranslate(private val api: ApiReverso, private val db: Databaseable) {
 
     fun getFavoriteKeys() = db.getAllKeys()
 
@@ -18,7 +18,7 @@ class UsecaseTranslate(private val api: ApiInterface, private val db: Databaseab
         if(favorite!=null){
             ViewStateTranslate.Data(favorite)
         }else{
-            val apiRequest = RequestTranslate(uiLang = "en", direction = "en-ru", source = query)
+            val apiRequest = RequestReverso(uiLang = "en", direction = "en-ru", source = query)
             val apiResponse = safeRun { api.getTranslation(apiRequest) }
             ViewStateTranslate.from(apiResponse)
         }

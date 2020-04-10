@@ -1,12 +1,19 @@
-package com.darkminstrel.pocketdict.database
+package com.darkminstrel.pocketdict.database.room
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.darkminstrel.pocketdict.data.ParsedTranslation
+import com.darkminstrel.pocketdict.database.Databaseable
 import com.squareup.moshi.Moshi
 
-class DatabaseRoom(context: Context, moshi: Moshi):Databaseable {
+class DatabaseRoom(context: Context, moshi: Moshi): Databaseable {
+    companion object {
+        fun build(context: Context, moshi: Moshi): Databaseable {
+            return DatabaseRoom(context, moshi)
+        }
+    }
+
     private val moshiAdapter = moshi.adapter(ParsedTranslation::class.java)
     private val db = Room.databaseBuilder(context, RoomDB::class.java, "translations.db").build()
 

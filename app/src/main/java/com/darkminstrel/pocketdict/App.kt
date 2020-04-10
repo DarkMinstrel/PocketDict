@@ -1,9 +1,8 @@
 package com.darkminstrel.pocketdict
 
 import android.app.Application
-import com.darkminstrel.pocketdict.api.ApiImpl
-import com.darkminstrel.pocketdict.database.DatabaseRoom
-import com.darkminstrel.pocketdict.database.Databaseable
+import com.darkminstrel.pocketdict.api.reverso.ApiReverso
+import com.darkminstrel.pocketdict.database.room.DatabaseRoom
 import com.darkminstrel.pocketdict.ui.frg_list.FrgListViewModel
 import com.darkminstrel.pocketdict.ui.frg_details.FrgDetailsViewModel
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
@@ -25,8 +24,8 @@ class App: Application() {
     private fun setupKoin(): KoinApplication {
         val appModule = module {
             single{ Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
-            single{ ApiImpl().makeRetrofitService(get()) }
-            single{ DatabaseRoom(get(), get()) as Databaseable }
+            single{ ApiReverso.build(get()) }
+            single{ DatabaseRoom.build(get(), get()) }
             single{ TextToSpeechManager(get()) }
         }
         val usecaseModule = module {

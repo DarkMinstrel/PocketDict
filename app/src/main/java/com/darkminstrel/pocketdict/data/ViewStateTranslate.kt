@@ -1,7 +1,7 @@
 package com.darkminstrel.pocketdict.data
 
 import com.darkminstrel.pocketdict.ResultWrapper
-import com.darkminstrel.pocketdict.api.ResponseTranslate
+import com.darkminstrel.pocketdict.api.reverso.ResponseReverso
 import retrofit2.HttpException
 
 sealed class ViewStateTranslate {
@@ -10,21 +10,20 @@ sealed class ViewStateTranslate {
     data class Error(val error:ErrorTranslation): ViewStateTranslate()
 
     companion object {
-        fun from(apiResult: ResultWrapper<ResponseTranslate>): ViewStateTranslate {
-            return when(apiResult){
+        fun from(apiResponse: ResultWrapper<ResponseReverso>): ViewStateTranslate {
+            return when(apiResponse){
                 is ResultWrapper.Success -> {
-                    val response = apiResult.value
+                    val response = apiResponse.value
                     if(response.error && response.message!=null) {
                         Error(ErrorTranslation.ErrorTranslationServer(response.message))
                     }
                     val parsed = ParsedTranslation.from(response)
-                    parsed?.let { Data(it) }
-                        ?: Error(ErrorTranslation.ErrorTranslationEmpty)
+                    parsed?.let { Data(it) } ?: Error(ErrorTranslation.ErrorTranslationEmpty)
                 }
                 is ResultWrapper.Error -> {
-                    when(apiResult.error){
+                    when(apiResponse.error){
                         is HttpException -> {
-                            val code = apiResult.error.code()
+                            val code = apiResponse.error.code()
                             Error(ErrorTranslation.ErrorTranslationHttp(code))
                         }
                         else -> Error(ErrorTranslation.ErrorTranslationNetwork)
