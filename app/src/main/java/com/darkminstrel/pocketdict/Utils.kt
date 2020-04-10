@@ -26,7 +26,10 @@ fun DBG(s:Any?){
     if(BuildConfig.DEBUG_FEATURES) Log.d("FLIODBG", s.toString())
 }
 fun DBGE(s:Throwable?){
-    if(BuildConfig.DEBUG_FEATURES) Log.d("FLIODBG", "ERROR: "+s?.message)
+    DBG("ERROR: "+s?.message)
+}
+fun DBGT(s:Any?){
+    DBG("$s is running on ${Thread.currentThread().name}")
 }
 
 fun ChipGroup.findCheckedChip():Chip? {

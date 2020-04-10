@@ -3,10 +3,11 @@ package com.darkminstrel.pocketdict.ui.frg_details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ParsedTranslation
-import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
+import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import kotlinx.coroutines.*
 
 class FrgDetailsViewModel(private val usecase: UsecaseTranslate, val ttsManager:TextToSpeechManager) : ViewModel() {
@@ -21,14 +22,14 @@ class FrgDetailsViewModel(private val usecase: UsecaseTranslate, val ttsManager:
     fun onQuerySubmit(query: String) {
         liveDataViewState.value = ViewStateTranslate.Progress
         job?.cancel()
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = viewModelScope.launch {
             val viewState = usecase.getTranslation(query)
             if(isActive) liveDataViewState.postValue(viewState)
         }
     }
 
     fun onChangeFavoriteStatus(translation: ParsedTranslation, isFavorite:Boolean){
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             usecase.setFavorite(translation, isFavorite)
         }
     }

@@ -4,18 +4,15 @@ import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.darkminstrel.pocketdict.Config
-import com.darkminstrel.pocketdict.R
-import com.darkminstrel.pocketdict.colorize
+import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.ui.views.ViewHolderText
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import kotlinx.coroutines.*
-import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdapterFavorites(private val vm: FrgListViewModel, private val onClickListener: (String)->Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: FrgListViewModel, private val onClickListener: (String)->Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var query = ""
     private val allKeys = ArrayList<String>()
     private val objects = ArrayList<Any>()
@@ -89,12 +86,13 @@ class AdapterFavorites(private val vm: FrgListViewModel, private val onClickList
             holder.setTexts(keyColorized, it.getDescription())
         } ?: run {
             holder.setTexts("", "")
-            jobsMap[holder] = CoroutineScope(Dispatchers.IO).launch {
-                val translation = vm.getFavorite(key)
-                withContext(Dispatchers.Main){
-                    translation?.let{
-                        cache.put(key, translation)
-                        if(isActive) holder.setTexts(keyColorized, it.getDescription())
+            jobsMap[holder] = scopeView.launch {
+                withContext(Dispatchers.IO) {
+                    vm.getFavorite(key)?.let { translation ->
+                        withContext(Dispatchers.Main) {
+                            cache.put(key, translation)
+                            if (isActive) holder.setTexts(keyColorized, translation.getDescription())
+                        }
                     }
                 }
             }
