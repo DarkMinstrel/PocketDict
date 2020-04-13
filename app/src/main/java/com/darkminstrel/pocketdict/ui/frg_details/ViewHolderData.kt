@@ -1,5 +1,6 @@
 package com.darkminstrel.pocketdict.ui.frg_details
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.google.android.material.chip.ChipGroup
 
 class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
+    private val tvTranscription = rootView.findViewById<TextView>(R.id.tvTranscription)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
     private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
     private val cbFavorite = rootView.findViewById<FavoriteButton>(R.id.cbFavorite)
@@ -64,9 +66,12 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     private var parsed:ParsedTranslation?=null
     private var keys:List<String>?=null
 
+    @SuppressLint("SetTextI18n")
     fun setData(parsed: ParsedTranslation){
         this.parsed = parsed
         tvWordSource.text = parsed.source
+        tvTranscription.visibility = if(parsed.transcription.isNullOrEmpty()) View.GONE else View.VISIBLE
+        tvTranscription.text = "[ ${parsed.transcription} ]"
         updateFavoriteButton()
 
         chipGroup.removeAllViews()

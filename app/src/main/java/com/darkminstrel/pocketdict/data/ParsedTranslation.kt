@@ -16,6 +16,7 @@ data class ParsedTranslation(
     val source:String,
     val langFrom:String,
     val langTo:String,
+    val transcription:String?,
     val defaultContexts:List<TranslationPair>?,
     private val items:List<ParsedTranslationItem>
 ){
@@ -37,6 +38,7 @@ data class ParsedTranslation(
         val source = this.source
         val langFrom = this.langFrom
         val langTo = this.langTo
+        val transcription = this.transcription ?: other.transcription
         val defaultContexts = (this.defaultContexts.orEmpty() + other.defaultContexts.orEmpty()).nullOrNotEmpty()
         val map:HashMap<String, ArrayList<TranslationPair>> = LinkedHashMap()
         (this.items + other.items).forEach {
@@ -48,7 +50,7 @@ data class ParsedTranslation(
             list.add(ParsedTranslationItem(key, map[key]))
             list
         })
-        return ParsedTranslation(source, langFrom, langTo, defaultContexts, items)
+        return ParsedTranslation(source, langFrom, langTo, transcription, defaultContexts, items)
     }
 }
 

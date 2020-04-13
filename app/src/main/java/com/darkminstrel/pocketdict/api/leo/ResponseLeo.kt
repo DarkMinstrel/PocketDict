@@ -11,7 +11,7 @@ data class ResponseLeoTranslation(
 data class ResponseLeo(
     private val status:String,
     private val error_msg:String,
-    private val transcription:String,
+    private val transcription:String?,
     private val word_value:String,
     private val translate:List<ResponseLeoTranslation>
 ): ResponseCommon {
@@ -19,7 +19,7 @@ data class ResponseLeo(
     override fun toParsed(): ParsedTranslation? {
         if(status!="ok" || translate.isEmpty()) return null
         val items = translate.map { ParsedTranslationItem(it.value, null) }
-        return ParsedTranslation(word_value, "en", "ru", null, items)
+        return ParsedTranslation(word_value, "en", "ru", transcription, null, items)
     }
 
     override fun getErrorMessage(): String? = if(status!="ok" && error_msg.isNotEmpty()) error_msg else null

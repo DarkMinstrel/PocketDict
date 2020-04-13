@@ -51,7 +51,7 @@ data class ResponseReverso(
                 items.add(ParsedTranslationItem(translation.translation, list))
             }
         }
-        return ParsedTranslation(source.source, source.directionFrom, source.directionTo, defaultContexts, items)
+        return ParsedTranslation(source.source, source.directionFrom, source.directionTo, null, defaultContexts, items)
     }
 
     override fun getErrorMessage(): String? = if(error && message!=null) message else null
