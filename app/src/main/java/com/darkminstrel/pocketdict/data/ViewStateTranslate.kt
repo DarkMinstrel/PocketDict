@@ -1,7 +1,7 @@
 package com.darkminstrel.pocketdict.data
 
 import com.darkminstrel.pocketdict.ResultWrapper
-import com.darkminstrel.pocketdict.api.reverso.ResponseReverso
+import com.darkminstrel.pocketdict.api.ResponseCommon
 import retrofit2.HttpException
 
 sealed class ViewStateTranslate {
@@ -10,20 +10,21 @@ sealed class ViewStateTranslate {
     data class Error(val error:ErrorTranslation): ViewStateTranslate()
 
     companion object {
-        fun from(apiResponse: ResultWrapper<ResponseReverso>): ViewStateTranslate {
-            return when(apiResponse){
+        fun from(wrapper: ResultWrapper<ResponseCommon>): ViewStateTranslate {
+            return when(wrapper){
                 is ResultWrapper.Success -> {
-                    val response = apiResponse.value
-                    if(response.error && response.message!=null) {
-                        Error(ErrorTranslation.ErrorTranslationServer(response.message))
+                    val responseValue = wrapper.value
+                    val errorMessage = responseValue.getErrorMessage()
+                    if(errorMessage!=null) Error(ErrorTranslation.ErrorTranslationServer(errorMessage))
+                    else{
+                        val parsed = responseValue.toParsed()
+                        if(parsed!=null) { Data(parsed) } else Error(ErrorTranslation.ErrorTranslationEmpty)
                     }
-                    val parsed = ParsedTranslation.from(response)
-                    parsed?.let { Data(it) } ?: Error(ErrorTranslation.ErrorTranslationEmpty)
                 }
                 is ResultWrapper.Error -> {
-                    when(apiResponse.error){
+                    when(wrapper.error){
                         is HttpException -> {
-                            val code = apiResponse.error.code()
+                            val code = wrapper.error.code()
                             Error(ErrorTranslation.ErrorTranslationHttp(code))
                         }
                         else -> Error(ErrorTranslation.ErrorTranslationNetwork)
@@ -31,6 +32,13 @@ sealed class ViewStateTranslate {
                 }
             }
         }
+    }
 
+    fun mergeWith(other:ViewStateTranslate):ViewStateTranslate{
+        return when {
+            this !is Data -> other
+            other !is Data -> this
+            else -> Data(this.translation.mergeWith(other.translation))
+        }
     }
 }

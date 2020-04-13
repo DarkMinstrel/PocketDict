@@ -1,6 +1,7 @@
 package com.darkminstrel.pocketdict
 
 import android.app.Application
+import com.darkminstrel.pocketdict.api.leo.ApiLeo
 import com.darkminstrel.pocketdict.api.reverso.ApiReverso
 import com.darkminstrel.pocketdict.database.room.DatabaseRoom
 import com.darkminstrel.pocketdict.ui.frg_list.FrgListViewModel
@@ -25,11 +26,12 @@ class App: Application() {
         val appModule = module {
             single{ Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
             single{ ApiReverso.build(get()) }
+            single{ ApiLeo.build(get()) }
             single{ DatabaseRoom.build(get(), get()) }
             single{ TextToSpeechManager(get()) }
         }
         val usecaseModule = module {
-            factory{ UsecaseTranslate(get(), get()) }
+            factory{ UsecaseTranslate(get(), get(), get()) }
         }
         val vmModule = module {
             viewModel{ FrgListViewModel(get()) }

@@ -1,5 +1,6 @@
 package com.darkminstrel.pocketdict.data
 
+import com.darkminstrel.pocketdict.api.leo.ResponseLeo
 import com.darkminstrel.pocketdict.api.reverso.ResponseReverso
 
 data class TranslationPair(
@@ -7,7 +8,7 @@ data class TranslationPair(
     val second:String
 )
 
-data class ParsedTranslationItem (
+data class ParsedTranslationItem(
     val text:String,
     val contexts:List<TranslationPair>?
 )
@@ -19,29 +20,6 @@ data class ParsedTranslation(
     val defaultContexts:List<TranslationPair>?,
     val items:List<ParsedTranslationItem>
 ){
-    companion object {
-
-        fun from(response: ResponseReverso):ParsedTranslation?{
-            if(!response.success || response.sources.isNullOrEmpty()) return null
-            val source = response.sources.first()
-            if(source.translations.isNullOrEmpty()) return null
-            var defaultContexts:List<TranslationPair>? = null
-            val items:ArrayList<ParsedTranslationItem> = ArrayList()
-            for(translation in source.translations){
-                var list = translation.contexts?.map { TranslationPair(reformatHtml(it.source), reformatHtml(it.target)) }
-                list = if(list.isNullOrEmpty()) null else list
-                if(translation.translation == "..."){
-                    defaultContexts = list
-                }else{
-                    items.add(ParsedTranslationItem(translation.translation, list))
-                }
-            }
-            return ParsedTranslation(source.source, source.directionFrom, source.directionTo, defaultContexts, items)
-        }
-
-        private fun reformatHtml(s:String):String = s.replace("<em>","<b>").replace("</em>","</b>")
-
-    }
 
     fun getDescription():String {
         val sb = StringBuilder()
@@ -50,6 +28,24 @@ data class ParsedTranslation(
             sb.append(item.text)
         }
         return sb.toString()
+    }
+
+    fun mergeWith(other:ParsedTranslation):ParsedTranslation{
+        val source = this.source
+        val langFrom = this.langFrom
+        val langTo = this.langTo
+        val defaultContexts = this.defaultContexts.orEmpty() + other.defaultContexts.orEmpty()
+        val map:HashMap<String, ArrayList<TranslationPair>> = LinkedHashMap()
+        (this.items + other.items).forEach {
+            val pairs = map[it.text] ?: ArrayList()
+            it.contexts?.let { contexts-> pairs.addAll(contexts) }
+            map[it.text] = pairs
+        }
+        val items = map.keys.fold(ArrayList<ParsedTranslationItem>(), { list, key ->
+            list.add(ParsedTranslationItem(key, map[key]))
+            list
+        })
+        return ParsedTranslation(source, langFrom, langTo, defaultContexts, items)
     }
 }
 
