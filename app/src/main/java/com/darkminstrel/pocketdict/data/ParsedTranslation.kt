@@ -1,7 +1,6 @@
 package com.darkminstrel.pocketdict.data
 
-import com.darkminstrel.pocketdict.api.leo.ResponseLeo
-import com.darkminstrel.pocketdict.api.reverso.ResponseReverso
+import com.darkminstrel.pocketdict.utils.nullOrNotEmpty
 
 data class TranslationPair(
     val first:String,
@@ -18,12 +17,16 @@ data class ParsedTranslation(
     val langFrom:String,
     val langTo:String,
     val defaultContexts:List<TranslationPair>?,
-    val items:List<ParsedTranslationItem>
+    private val items:List<ParsedTranslationItem>
 ){
+
+    val sortedItems by lazy {
+        items.sortedBy { if(it.contexts.isNullOrEmpty()) 1 else 0  }
+    }
 
     fun getDescription():String {
         val sb = StringBuilder()
-        for(item in items) {
+        for(item in sortedItems) {
             if(sb.isNotEmpty()) sb.append(", ")
             sb.append(item.text)
         }
@@ -34,7 +37,7 @@ data class ParsedTranslation(
         val source = this.source
         val langFrom = this.langFrom
         val langTo = this.langTo
-        val defaultContexts = this.defaultContexts.orEmpty() + other.defaultContexts.orEmpty()
+        val defaultContexts = (this.defaultContexts.orEmpty() + other.defaultContexts.orEmpty()).nullOrNotEmpty()
         val map:HashMap<String, ArrayList<TranslationPair>> = LinkedHashMap()
         (this.items + other.items).forEach {
             val pairs = map[it.text] ?: ArrayList()

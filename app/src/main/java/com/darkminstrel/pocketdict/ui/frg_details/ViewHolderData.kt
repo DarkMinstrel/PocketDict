@@ -71,8 +71,8 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
 
         chipGroup.removeAllViews()
         chipGroup.tag = parsed
-        chipGroup.visibility = if(parsed.items.isEmpty()) View.GONE else View.VISIBLE
-        for(translation in parsed.items){
+        chipGroup.visibility = if(parsed.sortedItems.isEmpty()) View.GONE else View.VISIBLE
+        for(translation in parsed.sortedItems){
             val chip = inflater.inflate(R.layout.listitem_chip, chipGroup, false) as Chip
             chip.text = translation.text
             chip.tag = translation
