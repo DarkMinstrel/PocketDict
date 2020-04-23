@@ -47,8 +47,7 @@ data class ParsedTranslation(
             map[it.text] = pairs
         }
         val items = map.keys.fold(ArrayList<ParsedTranslationItem>(), { list, key ->
-            list.add(ParsedTranslationItem(key, map[key]))
-            list
+            list.apply { add(ParsedTranslationItem(key, map[key])) }
         })
         return ParsedTranslation(source, langFrom, langTo, transcription, defaultContexts, items)
     }

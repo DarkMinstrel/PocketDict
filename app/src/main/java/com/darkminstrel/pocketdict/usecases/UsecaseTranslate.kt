@@ -1,5 +1,7 @@
 package com.darkminstrel.pocketdict.usecases
 
+import com.darkminstrel.pocketdict.ResultWrapper
+import com.darkminstrel.pocketdict.api.ResponseCommon
 import com.darkminstrel.pocketdict.api.leo.ApiLeo
 import com.darkminstrel.pocketdict.api.leo.RequestLeo
 import com.darkminstrel.pocketdict.api.reverso.ApiReverso
@@ -8,10 +10,10 @@ import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import com.darkminstrel.pocketdict.database.Databaseable
 import com.darkminstrel.pocketdict.safeRun
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+
+private const val langFrom = "en"
+private const val langTo = "ru"
 
 class UsecaseTranslate(private val apiReverso: ApiReverso, private val apiLeo: ApiLeo, private val db: Databaseable) {
 
@@ -22,18 +24,20 @@ class UsecaseTranslate(private val apiReverso: ApiReverso, private val apiLeo: A
         if(favorite!=null){
             ViewStateTranslate.Data(favorite)
         }else{
-            val deferredReverso = async(Dispatchers.IO) {
-                val requestReverso = RequestReverso(uiLang = "en", direction = "en-ru", source = query)
+            val deferreds = ArrayList<Deferred<ResultWrapper<ResponseCommon>>>(2)
+            deferreds += async(Dispatchers.IO) {
+                val requestReverso = RequestReverso(uiLang = "en", direction = "$langFrom-$langTo", source = query)
                 safeRun { apiReverso.getTranslation(requestReverso) }
             }
-            val deferredLeo = async(Dispatchers.IO) {
-                val requestLeo = RequestLeo(word = query)
-                safeRun { apiLeo.getTranslation(requestLeo) }
+            if(langFrom=="en" && langTo=="ru") {
+                deferreds += async(Dispatchers.IO) {
+                    val requestLeo = RequestLeo(word = query)
+                    safeRun { apiLeo.getTranslation(requestLeo) }
+                }
             }
-            val result = listOf(deferredReverso, deferredLeo)
-                .awaitAll()
+            val result = deferreds.awaitAll()
                 .map { ViewStateTranslate.from(it) }
-                .reduce { first,second -> first.mergeWith(second)}
+                .reduce { first,second -> first.mergeWith(second) }
             result
         }
     }
