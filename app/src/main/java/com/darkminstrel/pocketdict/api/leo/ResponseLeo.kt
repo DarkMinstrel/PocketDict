@@ -10,7 +10,7 @@ data class ResponseLeoTranslation(
 
 data class ResponseLeo(
     private val status:String,
-    private val error_msg:String,
+    private val error_msg:String?,
     private val transcription:String?,
     private val word_value:String,
     private val translate:List<ResponseLeoTranslation>
@@ -22,6 +22,6 @@ data class ResponseLeo(
         return ParsedTranslation(word_value, "en", "ru", transcription, null, items)
     }
 
-    override fun getErrorMessage(): String? = if(status!="ok" && error_msg.isNotEmpty()) error_msg else null
+    override fun getErrorMessage(): String? = if(status!="ok" && !error_msg.isNullOrEmpty()) error_msg else null
 
 }
