@@ -5,10 +5,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import com.darkminstrel.pocketdict.utils.DBG
+import com.darkminstrel.pocketdict.utils.getDrawableFromAttribute
 import com.darkminstrel.pocketdict.utils.trimQuery
 import kotlinx.coroutines.CoroutineScope
 
@@ -19,6 +21,9 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
         threshold = 0
     }
 
+    private val toolbar = rootView.findViewById<Toolbar>(R.id.toolbar).apply{
+        setNavigationOnClickListener { vm.tryReset() }
+    }
     private val viewList = ActMainViewList(scope, rootView, vm, this::clearFocus)
     private val viewDetails = ActMainViewDetails(rootView, vm)
 
@@ -44,6 +49,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
 
     fun setViewState(viewState: ViewStateTranslate?) {
         DBG("View state: ${viewState?.javaClass?.simpleName}")
+        modifyToolbar(viewState)
 
         if(viewState!=null){
             viewDetails.setViewState(viewState)
@@ -55,6 +61,19 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
             viewDetails.setVisible(false)
             requestFocus()
         }
+    }
+
+    private fun modifyToolbar(viewState: ViewStateTranslate?){
+        toolbar.title = when(viewState){
+            is ViewStateTranslate.Data -> viewState.translation.source
+            is ViewStateTranslate.Error -> viewState.query
+            else -> toolbar.resources.getString(R.string.appName)
+        }
+        toolbar.subtitle = when(viewState){
+            is ViewStateTranslate.Data -> viewState.translation.transcription?.let{"[$it]"}
+            else -> null
+        }
+        toolbar.navigationIcon = if(viewState!=null) toolbar.context.getDrawableFromAttribute(R.attr.homeAsUpIndicator) else null
     }
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) = viewDetails.setSpeechState(speechState)

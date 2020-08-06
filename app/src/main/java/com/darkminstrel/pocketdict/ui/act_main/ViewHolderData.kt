@@ -21,8 +21,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
 class ViewHolderData(rootView:View, private val vm: ActMainVM) {
-    private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
-    private val tvTranscription = rootView.findViewById<TextView>(R.id.tvTranscription)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
     private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
     private val cbFavorite = rootView.findViewById<FavoriteButton>(R.id.cbFavorite)
@@ -70,9 +68,6 @@ class ViewHolderData(rootView:View, private val vm: ActMainVM) {
     @SuppressLint("SetTextI18n")
     fun setData(parsed: ParsedTranslation){
         this.parsed = parsed
-        tvWordSource.text = parsed.source
-        tvTranscription.visibility = if(parsed.transcription.isNullOrEmpty()) View.GONE else View.VISIBLE
-        tvTranscription.text = "[ ${parsed.transcription} ]"
         updateFavoriteButton()
 
         chipGroup.removeAllViews()

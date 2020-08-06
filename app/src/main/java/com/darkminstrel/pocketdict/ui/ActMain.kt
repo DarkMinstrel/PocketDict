@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,7 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
         setTheme(R.style.AppTheme) //removing the splash
         super.onCreate(savedInstanceState)
         val rootView = findViewById<View>(android.R.id.content)
+        setSupportActionBar(findViewById(R.id.toolbar))
         //iterate(rootView) //TODO kill
         view = ActMainView(lifecycleScope, rootView, vm)
         vm.liveDataFavoriteKeys.observe(this, Observer { keys -> view?.setKeys(keys) })

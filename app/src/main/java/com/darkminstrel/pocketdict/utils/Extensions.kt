@@ -4,12 +4,14 @@ import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.widget.ImageView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.chip.Chip
@@ -29,6 +31,10 @@ fun Context.getAttrColor(@AttrRes attrRes: Int): Int {
     val typedValue = TypedValue()
     theme.resolveAttribute (attrRes, typedValue, true)
     return typedValue.data
+}
+fun Context.getDrawableFromAttribute(attributeId: Int): Drawable? {
+    val typedValue = TypedValue().also { theme.resolveAttribute(attributeId, it, true) }
+    return ResourcesCompat.getDrawable(resources, typedValue.resourceId, theme)
 }
 fun Context.getClipboardText():String? {
     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

@@ -36,7 +36,7 @@ class UsecaseTranslate(private val apiReverso: ApiReverso, private val apiLeo: A
                 }
             }
             val result = deferreds.awaitAll()
-                .map { ViewStateTranslate.from(it) }
+                .map { ViewStateTranslate.from(query, it) }
                 .reduce { first,second -> first.mergeWith(second) }
             result
         }
