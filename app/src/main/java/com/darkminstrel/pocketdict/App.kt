@@ -4,8 +4,7 @@ import android.app.Application
 import com.darkminstrel.pocketdict.api.leo.ApiLeo
 import com.darkminstrel.pocketdict.api.reverso.ApiReverso
 import com.darkminstrel.pocketdict.database.room.DatabaseRoom
-import com.darkminstrel.pocketdict.ui.frg_list.FrgListViewModel
-import com.darkminstrel.pocketdict.ui.frg_details.FrgDetailsViewModel
+import com.darkminstrel.pocketdict.ui.act_main.ActMainVM
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -34,8 +33,7 @@ class App: Application() {
             factory{ UsecaseTranslate(get(), get(), get()) }
         }
         val vmModule = module {
-            viewModel{ FrgListViewModel(get()) }
-            viewModel{ FrgDetailsViewModel(get(), get()) }
+            viewModel{ ActMainVM(get(), get()) }
         }
 
         return startKoin {

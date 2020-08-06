@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="?colorPrimaryDark"
+        android:textColor="?colorSecondary"
         tools:text="Sentence #2"/>
 
 </LinearLayout>

@@ -1,24 +1,56 @@
 package com.darkminstrel.pocketdict.ui
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.darkminstrel.pocketdict.R
-import com.darkminstrel.pocketdict.ui.frg_details.FrgDetails
-import com.darkminstrel.pocketdict.ui.frg_list.FrgList
+import com.darkminstrel.pocketdict.ui.act_main.ActMainVM
+import com.darkminstrel.pocketdict.ui.act_main.ActMainView
+import com.darkminstrel.pocketdict.utils.DBG
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class ActMain : AppCompatActivity() {
+class ActMain : AppCompatActivity(R.layout.act_main) {
+
+    private val vm: ActMainVM by viewModel()
+    private var view: ActMainView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.act_main)
-
-        if(savedInstanceState==null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.containerFragment, FrgList())
-                .commit()
-        }
+        val rootView = findViewById<View>(android.R.id.content)
+        iterate(rootView)
+        view = ActMainView(lifecycleScope, rootView, vm)
+        vm.liveDataFavoriteKeys.observe(this, Observer { keys -> view?.setKeys(keys) })
+        vm.liveDataViewState.observe(this, Observer { viewState -> view?.setViewState(viewState) })
+        vm.ttsManager.liveDataUttering.observe(this, Observer { view?.setSpeechState(it) })
     }
 
+    override fun onResume() {
+        super.onResume()
+        view?.requestFocus()
+    }
+
+    override fun onBackPressed() {
+        if(!vm.tryReset()) super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        view = null
+        super.onDestroy()
+    }
+
+
+    private fun iterate(view:View){
+        view.setOnFocusChangeListener{v, isFocused ->
+            if(isFocused) DBG("Focused: ${v.javaClass.simpleName}")
+        }
+        if(view is ViewGroup){
+            for(v in view.children) iterate(v)
+        }
+    }
 }
 
 

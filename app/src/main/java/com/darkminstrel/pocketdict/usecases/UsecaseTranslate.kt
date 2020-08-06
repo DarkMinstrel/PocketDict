@@ -17,7 +17,7 @@ private const val langTo = "ru"
 
 class UsecaseTranslate(private val apiReverso: ApiReverso, private val apiLeo: ApiLeo, private val db: Databaseable) {
 
-    fun getFavoriteKeys() = db.getAllKeys()
+    val liveDataFavoriteKeys = db.getAllKeys()
 
     suspend fun getTranslation(query: String): ViewStateTranslate = withContext(Dispatchers.IO){
         val favorite = db.get(query)

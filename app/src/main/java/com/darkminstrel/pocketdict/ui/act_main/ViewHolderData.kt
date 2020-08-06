@@ -1,4 +1,4 @@
-package com.darkminstrel.pocketdict.ui.frg_details
+package com.darkminstrel.pocketdict.ui.act_main
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.AnimationDrawable
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
@@ -19,7 +20,7 @@ import com.darkminstrel.pocketdict.utils.setTintFromAttr
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
+class ViewHolderData(rootView:View, private val vm: ActMainVM) {
     private val tvWordSource = rootView.findViewById<TextView>(R.id.tvWordSource)
     private val tvTranscription = rootView.findViewById<TextView>(R.id.tvTranscription)
     private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
@@ -98,13 +99,13 @@ class ViewHolderData(rootView:View, private val vm: FrgDetailsViewModel) {
     }
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {
-        val drawable = btnSpeak.context.getDrawable(when(speechState){
+        val drawable = ContextCompat.getDrawable(btnSpeak.context, when(speechState){
             TextToSpeechManager.SpeechState.UTTERING -> R.drawable.ic_volume_animated
             TextToSpeechManager.SpeechState.LOADING -> R.drawable.ic_volume_1_24px
             else -> R.drawable.ic_volume_2_24px
         })
         btnSpeak.setImageDrawable(drawable)
-        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorSecondary else android.R.attr.textColorPrimary)
+        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorSecondary else R.attr.colorPrimary)
         if(drawable is AnimationDrawable) drawable.start()
     }
 }

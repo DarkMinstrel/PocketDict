@@ -1,4 +1,4 @@
-package com.darkminstrel.pocketdict.ui.frg_list
+package com.darkminstrel.pocketdict.ui.act_main
 
 import android.util.LruCache
 import android.view.LayoutInflater
@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: FrgListViewModel, private val onClickListener: (String)->Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:ActMainVM): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var query = ""
     private val allKeys = ArrayList<String>()
     private val objects = ArrayList<Any>()
@@ -81,7 +81,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Fr
 
     private fun bindTextPair(holder: ViewHolderTextPair, key: String){
         val keyColorized = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
-        holder.itemView.setOnClickListener { onClickListener.invoke(key) }
+        holder.itemView.setOnClickListener { vm.onQuerySubmit(key) }
 
         jobsMap[holder]?.cancel()
         cache.get(key)?.let{
