@@ -10,6 +10,7 @@
         <item name="colorBackground">@color/colorBackground</item>
         <item name="colorDivider">@color/colorDivider</item>
         <item name="colorHeart">@color/colorHeart</item>
+        <item name="colorDark">@color/colorDark</item>
     </style>
 
     <style name="AppTheme.Launcher">

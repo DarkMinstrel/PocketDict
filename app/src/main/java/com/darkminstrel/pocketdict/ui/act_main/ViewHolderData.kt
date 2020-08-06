@@ -100,7 +100,7 @@ class ViewHolderData(rootView:View, private val vm: ActMainVM) {
             else -> R.drawable.ic_volume_2_24px
         })
         btnSpeak.setImageDrawable(drawable)
-        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorSecondary else R.attr.colorPrimary)
+        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorPrimary else R.attr.colorDark)
         if(drawable is AnimationDrawable) drawable.start()
     }
 }

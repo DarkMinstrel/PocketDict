@@ -18,7 +18,7 @@ class FavoriteButton @JvmOverloads constructor(
     private var checked = false
 
     init{
-        iv = inflate(context, R.layout.favorite_button, this).findViewById<ImageView>(android.R.id.icon)
+        iv = inflate(context, R.layout.favorite_button, this).findViewById(android.R.id.icon)
     }
 
     fun setChecked(checked:Boolean){

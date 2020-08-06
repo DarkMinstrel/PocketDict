@@ -66,6 +66,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
     private fun modifyToolbar(viewState: ViewStateTranslate?){
         toolbar.title = when(viewState){
             is ViewStateTranslate.Data -> viewState.translation.source
+            is ViewStateTranslate.Progress -> ""
             is ViewStateTranslate.Error -> viewState.query
             else -> toolbar.resources.getString(R.string.appName)
         }
