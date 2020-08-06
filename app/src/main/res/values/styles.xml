@@ -6,8 +6,12 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorOnSurface">@android:color/white</item> <!-- chip background -->
         <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="colorBackground">@color/colorBackground</item>
         <item name="colorDivider">@color/colorDivider</item>
         <item name="colorHeart">@color/colorHeart</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 </resources>

@@ -19,9 +19,10 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
     private var view: ActMainView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme) //removing the splash
         super.onCreate(savedInstanceState)
         val rootView = findViewById<View>(android.R.id.content)
-        iterate(rootView)
+        //iterate(rootView) //TODO kill
         view = ActMainView(lifecycleScope, rootView, vm)
         vm.liveDataFavoriteKeys.observe(this, Observer { keys -> view?.setKeys(keys) })
         vm.liveDataViewState.observe(this, Observer { viewState -> view?.setViewState(viewState) })
@@ -41,7 +42,6 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
         view = null
         super.onDestroy()
     }
-
 
     private fun iterate(view:View){
         view.setOnFocusChangeListener{v, isFocused ->
