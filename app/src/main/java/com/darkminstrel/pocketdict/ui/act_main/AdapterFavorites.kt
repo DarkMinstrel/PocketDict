@@ -22,6 +22,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
     private val cache = LruCache<String, ParsedTranslation>(Config.MEMORY_CACHE_SIZE)
 
     private val objectTitle = Object()
+    private val objectNothingFound = Object()
 
     fun setKeys(keys:List<String>){
         this.allKeys.clear()
@@ -46,8 +47,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
             objects.add(objectTitle)
             objects.addAll(filteredKeys)
         }else if(filteredKeys.isEmpty() && allKeys.isNotEmpty()){
-            objects.add(objectTitle)
-            objects.addAll(allKeys)
+            objects.add(objectNothingFound)
         }else{
             //TODO empty view
         }
@@ -59,6 +59,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
     override fun getItemViewType(position: Int): Int {
         return when(objects[position]){
             objectTitle -> R.layout.listitem_title
+            objectNothingFound -> R.layout.listitem_nothing_found
             else -> R.layout.listitem_word
         }
     }
@@ -68,6 +69,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
         return when(viewType){
             R.layout.listitem_title -> ViewHolderText(view)
             R.layout.listitem_word -> ViewHolderTextPair(view)
+            R.layout.listitem_nothing_found -> ViewHolderText(view)
             else -> throw RuntimeException("Unknown view type")
         }
     }
@@ -75,6 +77,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         return when(val o = objects[position]){
             objectTitle -> (holder as ViewHolderText).setText(R.string.favoriteTranslations)
+            objectNothingFound -> (holder as ViewHolderText).setText(R.string.nothingFound)
             else -> bindTextPair(holder as ViewHolderTextPair, o as String)
         }
     }

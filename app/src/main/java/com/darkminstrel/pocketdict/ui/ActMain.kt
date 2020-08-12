@@ -37,7 +37,9 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
     }
 
     override fun onBackPressed() {
-        if(!vm.tryReset()) super.onBackPressed()
+        if(vm.tryReset()) return
+        view?.let { if(it.tryClearInput()) return }
+        super.onBackPressed()
     }
 
     override fun onDestroy() {

@@ -100,6 +100,13 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
         viewDetails.setKeys(keys)
     }
 
+    fun tryClearInput():Boolean {
+        return if(searchView.query.isNotEmpty()){
+            searchView.setQuery("", false)
+            requestFocus()
+            true
+        }else false
+    }
 }
 
 /*
