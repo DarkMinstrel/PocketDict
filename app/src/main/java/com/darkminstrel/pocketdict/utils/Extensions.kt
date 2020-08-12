@@ -21,6 +21,9 @@ import kotlin.contracts.contract
 fun <T> List<T>?.nullOrNotEmpty(): List<T>? {
     return if(this.isNullOrEmpty()) null else this
 }
+fun String?.nullOrNotEmpty(): String? {
+    return if(this.isNullOrEmpty()) null else this
+}
 
 fun ChipGroup.findCheckedChip(): Chip? {
     for(chip in children) if((chip as Chip).isChecked) return chip

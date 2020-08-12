@@ -11,6 +11,7 @@ import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
 import com.darkminstrel.pocketdict.utils.DBG
 import com.darkminstrel.pocketdict.utils.getDrawableFromAttribute
+import com.darkminstrel.pocketdict.utils.nullOrNotEmpty
 import com.darkminstrel.pocketdict.utils.trimQuery
 import kotlinx.coroutines.CoroutineScope
 
@@ -34,6 +35,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
+                viewList.onQueryChanged("") //remove search results
                 vm.onQuerySubmit(trimQuery(query))
                 return true
             }
@@ -71,7 +73,10 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
             else -> toolbar.resources.getString(R.string.appName)
         }
         toolbar.subtitle = when(viewState){
-            is ViewStateTranslate.Data -> viewState.translation.transcription?.let{"[$it]"}
+            is ViewStateTranslate.Data -> {
+                val transcription = viewState.translation.transcription.nullOrNotEmpty()
+                transcription?.let{"[$it]"}
+            }
             else -> null
         }
         toolbar.navigationIcon = if(viewState!=null) toolbar.context.getDrawableFromAttribute(R.attr.homeAsUpIndicator) else null
