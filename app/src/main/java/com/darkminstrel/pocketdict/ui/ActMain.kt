@@ -26,9 +26,9 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
         setSupportActionBar(findViewById(R.id.toolbar))
         //iterate(rootView) //TODO kill
         view = ActMainView(lifecycleScope, rootView, vm)
-        vm.liveDataFavoriteKeys.observe(this, Observer { keys -> view?.setKeys(keys) })
-        vm.liveDataViewState.observe(this, Observer { viewState -> view?.setViewState(viewState) })
-        vm.ttsManager.liveDataUttering.observe(this, Observer { view?.setSpeechState(it) })
+        vm.liveDataFavoriteKeys.observe(this, { keys -> view?.setKeys(keys) })
+        vm.liveDataViewState.observe(this, { viewState -> view?.setViewState(viewState) })
+        vm.ttsManager.liveDataUttering.observe(this, { view?.setSpeechState(it) })
     }
 
     override fun onResume() {
