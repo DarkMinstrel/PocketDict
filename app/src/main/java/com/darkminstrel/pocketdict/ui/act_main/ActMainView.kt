@@ -2,10 +2,8 @@ package com.darkminstrel.pocketdict.ui.act_main
 
 import android.content.Context
 import android.os.Build
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.WindowInsetsAnimation
+import android.view.*
+import android.view.WindowInsets.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.annotation.RequiresApi
@@ -26,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 
 class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
     private val imm = rootView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    private val constraintLayout = rootView.findViewById<View>(R.id.constraintLayout)
     private val searchView = rootView.findViewById<SearchView>(R.id.searchView)
     private val searchViewEditText: AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
@@ -137,13 +136,9 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
 
     @RequiresApi(30)
     private fun applyInsets(insets: WindowInsets){
-        val top = insets.getInsets(WindowInsets.Type.systemBars()).top
-        val bottom = Integer.max(insets.getInsets(WindowInsets.Type.ime()).bottom, insets.getInsets(WindowInsets.Type.navigationBars()).bottom)
-        toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            updateMargins(top = top)
-        }
-        containerInput.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            updateMargins(bottom = bottom)
+        val all = insets.getInsets(Type.systemBars() or Type.ime())
+        constraintLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            updateMargins(top = all.top, bottom = all.bottom, left = all.left, right = all.right)
         }
     }
 
