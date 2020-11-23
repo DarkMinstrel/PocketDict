@@ -1,11 +1,20 @@
 package com.darkminstrel.pocketdict.ui.act_main
 
 import android.content.Context
+import android.os.Build
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowInsetsAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.doOnLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
+import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.R
 import com.darkminstrel.pocketdict.TextToSpeechManager
 import com.darkminstrel.pocketdict.data.ViewStateTranslate
@@ -21,6 +30,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
     private val searchViewEditText: AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
     }
+    private val containerInput:View = rootView.findViewById(R.id.containerInput)
 
     private val toolbar = rootView.findViewById<Toolbar>(R.id.toolbar).apply{
         setNavigationOnClickListener { vm.tryReset() }
@@ -46,6 +56,9 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
                 imm?.showSoftInput(v, 0)
                 //vm.tryReset()
             }
+        }
+        if(Config.ENABLE_IME_INSETS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setupInsets(rootView)
         }
     }
 
@@ -107,20 +120,33 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
             true
         }else false
     }
+
+    @RequiresApi(30)
+    private fun setupInsets(rootView:View){
+        rootView.doOnLayout {
+            rootView.rootWindowInsets?.let { insets -> applyInsets(insets) }
+            rootView.setWindowInsetsAnimationCallback(object : WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
+                override fun onProgress(insets: WindowInsets, animations: MutableList<WindowInsetsAnimation>): WindowInsets {
+                    applyInsets(insets)
+                    return insets
+                }
+            })
+            //TODO floating keyboard
+        }
+    }
+
+    @RequiresApi(30)
+    private fun applyInsets(insets: WindowInsets){
+        val top = insets.getInsets(WindowInsets.Type.systemBars()).top
+        val bottom = Integer.max(insets.getInsets(WindowInsets.Type.ime()).bottom, insets.getInsets(WindowInsets.Type.navigationBars()).bottom)
+        toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            updateMargins(top = top)
+        }
+        containerInput.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            updateMargins(bottom = bottom)
+        }
+    }
+
+
 }
 
-/*
-    val clipboard = getClipboardText(rootView.context)
-    DBG("Clipboard: $clipboard")
-    searchView.suggestionsAdapter = clipboard?.let{
-        SimpleCursorAdapter(searchView.context,
-            android.R.layout.simple_list_item_1,
-            MatrixCursor(arrayOf(BaseColumns._ID, "suggestion")).apply {
-                addRow(arrayOf(0, clipboard))
-                addRow(arrayOf(1, "hello"))
-            },
-            arrayOf("suggestion"),
-            intArrayOf(android.R.id.text1),
-            CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
-    }
- */
