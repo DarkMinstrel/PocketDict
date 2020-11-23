@@ -44,7 +44,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
             DBG("searchViewEditText focus = $hasFocus")
             if(hasFocus) {
                 imm?.showSoftInput(v, 0)
-                vm.tryReset()
+                //vm.tryReset()
             }
         }
     }
