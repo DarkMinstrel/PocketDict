@@ -9,9 +9,7 @@ import com.squareup.moshi.Moshi
 
 class DatabaseRoom(context: Context, moshi: Moshi): Databaseable {
     companion object {
-        fun build(context: Context, moshi: Moshi): Databaseable {
-            return DatabaseRoom(context, moshi)
-        }
+        fun build(context: Context, moshi: Moshi): Databaseable = DatabaseRoom(context, moshi)
     }
 
     private val moshiAdapter = moshi.adapter(ParsedTranslation::class.java)
@@ -20,7 +18,7 @@ class DatabaseRoom(context: Context, moshi: Moshi): Databaseable {
     override fun getAllKeys(): LiveData<List<String>> = db.getDao().getAllKeys()
 
     override suspend fun get(key: String): ParsedTranslation? {
-        val json: String = db.getDao().get(key) ?: return null
+        val json:String = db.getDao().get(key) ?: return null
         return try{
             @Suppress("BlockingMethodInNonBlockingContext")
             moshiAdapter.fromJson(json)
