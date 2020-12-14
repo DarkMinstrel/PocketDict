@@ -8,6 +8,7 @@
 
     <string name="enterAWordHere">Enter a word here</string>
     <string name="favoriteTranslations">Favorite translations</string>
+    <string name="empty">Your favorite translations will show up here</string>
     <string name="deviceIsMuted">Device is muted</string>
     <string name="pronounce">Pronounce</string>
 

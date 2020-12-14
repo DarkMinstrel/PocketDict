@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
+import com.darkminstrel.pocketdict.ui.views.ViewHolderSimple
 import com.darkminstrel.pocketdict.ui.views.ViewHolderText
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.utils.assertUiThread
@@ -21,6 +22,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
 
     private val objectTitle = Object()
     private val objectNothingFound = Object()
+    private val objectEmpty = Object()
 
     fun setKeys(keys:List<String>){
         this.allKeys.clear()
@@ -47,7 +49,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
         }else if(filteredKeys.isEmpty() && allKeys.isNotEmpty()){
             objects.add(objectNothingFound)
         }else{
-            //TODO empty view
+            objects.add(objectEmpty)
         }
         notifyDataSetChanged() //TODO optimize
     }
@@ -58,6 +60,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
         return when(objects[position]){
             objectTitle -> R.layout.listitem_title
             objectNothingFound -> R.layout.listitem_nothing_found
+            objectEmpty -> R.layout.listitem_empty
             else -> R.layout.listitem_word
         }
     }
@@ -67,16 +70,21 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
         return when(viewType){
             R.layout.listitem_title -> ViewHolderText(view)
             R.layout.listitem_word -> ViewHolderTextPair(view)
-            R.layout.listitem_nothing_found -> ViewHolderText(view)
+            R.layout.listitem_nothing_found -> ViewHolderSimple(view)
+            R.layout.listitem_empty -> ViewHolderSimple(view)
             else -> throw RuntimeException("Unknown view type")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return when(val o = objects[position]){
-            objectTitle -> (holder as ViewHolderText).setText(R.string.favoriteTranslations)
-            objectNothingFound -> (holder as ViewHolderText).setText(R.string.nothingFound)
-            else -> bindTextPair(holder as ViewHolderTextPair, o as String)
+        val o = objects[position]
+        when(holder){
+            is ViewHolderTextPair -> bindTextPair(holder, o as String)
+            is ViewHolderText -> {
+                when(o){
+                    objectTitle -> holder.setText(R.string.favoriteTranslations)
+                }
+            }
         }
     }
 
@@ -84,7 +92,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
         holder.itemView.tag = null
         val keyColorized = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
         holder.itemView.setOnClickListener { view->
-            (view.tag as ParsedTranslation?)?.let{
+            (view.tag as? ParsedTranslation)?.let{
                 onItemClicked(holder.adapterPosition, it)
             }
         }
