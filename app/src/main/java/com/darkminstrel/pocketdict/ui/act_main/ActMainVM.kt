@@ -37,7 +37,7 @@ class ActMainVM(private val usecase: UsecaseTranslate, val ttsManager: TextToSpe
         job?.cancel()
         job = null
 
-        val shouldShowSuggestion = liveDataFavoriteKeys.value?.any { it!=queryTrimmed && it.contains(queryTrimmed) } ?: false
+        val shouldShowSuggestion = queryTrimmed.isEmpty() || liveDataFavoriteKeys.value?.any { it!=queryTrimmed && it.contains(queryTrimmed) } ?: false
         if(shouldShowSuggestion){
             ldViewState.value = null
         }else{

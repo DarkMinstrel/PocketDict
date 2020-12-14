@@ -35,8 +35,7 @@ class ActMainView(scope: CoroutineScope, private val binding:ActMainBinding, vm:
     init {
         binding.toolbar.apply {
             setNavigationOnClickListener {
-                tryClearInput()
-                vm.tryReset()
+                if(vm.tryReset()) tryClearInput()
             }
         }
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {

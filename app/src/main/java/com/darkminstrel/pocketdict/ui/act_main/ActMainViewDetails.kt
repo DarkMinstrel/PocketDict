@@ -19,7 +19,7 @@ class ActMainViewDetails(private val binding: ActMainBinding, vm: ActMainVM) {
             progressBar.visibility = if (viewState is ViewStateTranslate.Progress) View.VISIBLE else View.INVISIBLE
             tvError.visibility = if (viewState is ViewStateTranslate.Error) View.VISIBLE else View.INVISIBLE
             scrollView.visibility = if (viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
-            containerMenu.visibility = if (viewState is ViewStateTranslate.Data) View.VISIBLE else View.INVISIBLE
+            containerMenu.visibility = if (viewState is ViewStateTranslate.Data) View.VISIBLE else View.GONE
 
             if (viewState is ViewStateTranslate.Error) {
                 tvError.text = viewState.error.getMessage(tvError.context)

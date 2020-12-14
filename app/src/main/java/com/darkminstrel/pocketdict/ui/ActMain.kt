@@ -15,7 +15,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class ActMain : AppCompatActivity(R.layout.act_main) {
 
     private val vm: ActMainVM by viewModel()
-    private var view: ActMainView? = null
+    private lateinit var view: ActMainView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme) //removing the splash
@@ -28,25 +28,22 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
         setSupportActionBar(binding.toolbar)
 
         view = ActMainView(lifecycleScope, binding, vm)
-        vm.liveDataFavoriteKeys.observe(this, { keys -> view?.setKeys(keys) })
-        vm.liveDataViewState.observe(this, { viewState -> view?.setViewState(viewState) })
-        vm.ttsManager.liveDataUttering.observe(this, { view?.setSpeechState(it) })
+        vm.liveDataFavoriteKeys.observe(this, { keys -> view.setKeys(keys) })
+        vm.liveDataViewState.observe(this, { viewState -> view.setViewState(viewState) })
+        vm.ttsManager.liveDataUttering.observe(this, { view.setSpeechState(it) })
     }
 
     override fun onResume() {
         super.onResume()
-        view?.requestFocus(true)
+        view.requestFocus(true)
     }
 
     override fun onBackPressed() {
-        if(vm.tryReset()) return
-        view?.let { if(it.tryClearInput()) return }
+        if(vm.tryReset()) {
+            view.tryClearInput()
+            return
+        }
         super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        view = null
-        super.onDestroy()
     }
 
 }
