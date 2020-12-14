@@ -16,4 +16,11 @@
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
+
+    <style name="TextHeadline">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
 </resources>
