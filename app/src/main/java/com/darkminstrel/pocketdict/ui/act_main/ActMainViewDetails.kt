@@ -14,7 +14,7 @@ class ActMainViewDetails(private val binding: ActMainBinding, vm: ActMainVM, cle
     private val vhData = ViewHolderData(binding, vm)
 
     init {
-        binding.scrollViewData.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+        binding.scrollViewData.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, _, _, _ ->
             clearFocus.invoke()
         })
     }
