@@ -30,7 +30,7 @@ class ActMainView(scope: CoroutineScope, private val binding:ActMainBinding, vm:
     }
 
     private val viewList = ActMainViewList(scope, binding, vm, this::clearFocus)
-    private val viewDetails = ActMainViewDetails(binding, vm)
+    private val viewDetails = ActMainViewDetails(binding, vm, this::clearFocus)
 
     init {
         binding.toolbar.apply {

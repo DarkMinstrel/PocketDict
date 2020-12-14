@@ -56,8 +56,8 @@
             tools:text="Error message"
             app:drawableTopCompat="@drawable/ic_launcher_foreground" />
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollViewData"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
@@ -90,7 +90,7 @@
                     android:orientation="vertical" />
 
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
     </FrameLayout>
 
     <androidx.cardview.widget.CardView
