@@ -10,6 +10,7 @@
     <string name="favoriteTranslations">Favorite translations</string>
     <string name="empty">Your favorite translations will show up here</string>
     <string name="deviceIsMuted">Device is muted</string>
+    <string name="errorTextToSpeech">Error in Text-to-speech engine</string>
     <string name="pronounce">Pronounce</string>
 
 </resources>

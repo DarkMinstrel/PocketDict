@@ -33,11 +33,20 @@ class TextToSpeechManager(context: Context) {
     }
     private val tts:TextToSpeech = TextToSpeech(context, initListener)
 
-    fun speak(what:String, lang:String){
-        _liveDataUttering.postValue(SpeechState.LOADING)
+    fun speak(what:String, lang:String):Boolean{
         val params = Bundle().apply { putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, what) }
         tts.language = Locale(lang)
-        tts.speak(what, TextToSpeech.QUEUE_FLUSH, params, what)
+        val result = tts.speak(what, TextToSpeech.QUEUE_FLUSH, params, what)
+        return when(result){
+            TextToSpeech.SUCCESS ->{
+                _liveDataUttering.postValue(SpeechState.LOADING)
+                true
+            }
+            else ->{
+                _liveDataUttering.postValue(SpeechState.IDLE)
+                false
+            }
+        }
     }
 
     fun isMuted() = audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) == 0

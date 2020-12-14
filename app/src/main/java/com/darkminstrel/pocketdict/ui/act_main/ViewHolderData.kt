@@ -12,6 +12,7 @@ import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.databinding.ActMainBinding
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
+import com.darkminstrel.pocketdict.utils.DBG
 import com.darkminstrel.pocketdict.utils.convertHtml
 import com.darkminstrel.pocketdict.utils.findCheckedChip
 import com.darkminstrel.pocketdict.utils.setTintFromAttr
@@ -49,7 +50,8 @@ class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMai
                 if(tts.isMuted()){
                     Toast.makeText(binding.root.context, R.string.deviceIsMuted, Toast.LENGTH_SHORT).show()
                 }else{
-                    tts.speak(it.source, it.langFrom)
+                    val speakResult = tts.speak(it.source, it.langFrom)
+                    if(!speakResult) Toast.makeText(binding.root.context, R.string.errorTextToSpeech, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -94,6 +96,7 @@ class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMai
     }
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {
+        DBG("Speech state: $speechState")
         val drawable = ContextCompat.getDrawable(binding.btnSpeak.context, when(speechState){
             TextToSpeechManager.SpeechState.UTTERING -> R.drawable.ic_volume_animated
             TextToSpeechManager.SpeechState.LOADING -> R.drawable.ic_volume_1_24px
