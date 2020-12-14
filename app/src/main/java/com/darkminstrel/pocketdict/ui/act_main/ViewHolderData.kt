@@ -4,25 +4,18 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.core.view.forEach
-import androidx.core.view.iterator
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
 import com.darkminstrel.pocketdict.databinding.ActMainBinding
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
-import com.darkminstrel.pocketdict.ui.views.FavoriteButton
 import com.darkminstrel.pocketdict.utils.convertHtml
 import com.darkminstrel.pocketdict.utils.findCheckedChip
 import com.darkminstrel.pocketdict.utils.setTintFromAttr
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 
 class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMainVM) {
     private val inflater = LayoutInflater.from(binding.chipGroup.context)
@@ -107,7 +100,7 @@ class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMai
             else -> R.drawable.ic_volume_2_24px
         })
         binding.btnSpeak.setImageDrawable(drawable)
-        binding.btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorPrimary else R.attr.colorDark)
+        binding.btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorPrimary else R.attr.colorInactive)
         if(drawable is AnimationDrawable) drawable.start()
     }
 }

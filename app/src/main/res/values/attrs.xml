@@ -3,5 +3,5 @@
     <attr name="colorBackground" format="color"/>
     <attr name="colorDivider" format="color"/>
     <attr name="colorHeart" format="color"/>
-    <attr name="colorDark" format="color"/>
+    <attr name="colorInactive" format="color"/>
 </resources>

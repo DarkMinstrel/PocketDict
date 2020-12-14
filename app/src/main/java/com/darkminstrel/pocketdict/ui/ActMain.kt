@@ -18,7 +18,7 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
     private lateinit var view: ActMainView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme) //removing the splash
+        setTheme(R.style.Theme_PocketDict) //removing the splash
         if(Config.ENABLE_IME_INSETS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
             window.setDecorFitsSystemWindows(false)

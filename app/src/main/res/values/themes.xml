@@ -1,20 +1,21 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.PocketDict" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorOnSurface">@android:color/white</item> <!-- chip background -->
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="colorBackground">@color/colorBackground</item>
         <item name="colorDivider">@color/colorDivider</item>
         <item name="colorHeart">@color/colorHeart</item>
-        <item name="colorDark">@color/colorDark</item>
+        <item name="colorInactive">@color/colorInactive</item>
     </style>
 
-    <style name="AppTheme.Launcher">
+    <style name="Theme.PocketDict.Launcher">
         <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:statusBarColor">@color/colorBackgroundDark</item>
     </style>
 
     <style name="TextHeadline">
