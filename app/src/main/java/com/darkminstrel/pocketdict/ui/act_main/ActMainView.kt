@@ -35,7 +35,7 @@ class ActMainView(scope: CoroutineScope, private val binding:ActMainBinding, vm:
     init {
         binding.toolbar.apply {
             setNavigationOnClickListener {
-                if(vm.tryReset()) tryClearInput()
+                if(vm.tryReset()) requestFocus(true)
             }
         }
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -107,14 +107,6 @@ class ActMainView(scope: CoroutineScope, private val binding:ActMainBinding, vm:
     fun setKeys(keys:List<String>) {
         viewList.setKeys(keys)
         viewDetails.setKeys(keys)
-    }
-
-    fun tryClearInput():Boolean {
-        return if(binding.searchView.query.isNotEmpty()){
-            binding.searchView.setQuery("", false)
-            requestFocus(false)
-            true
-        }else false
     }
 
     @RequiresApi(30)

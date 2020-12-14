@@ -40,7 +40,7 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
 
     override fun onBackPressed() {
         if(vm.tryReset()) {
-            view.tryClearInput()
+            view.requestFocus(true)
             return
         }
         super.onBackPressed()

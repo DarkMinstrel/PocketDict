@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: ActMainVM, private val clearFocus: () -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: ActMainVM, private val onItemClicked: (position:Int, translation:ParsedTranslation) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var query = ""
     private val allKeys = ArrayList<String>()
     private val objects = ArrayList<Any>()
@@ -85,8 +85,7 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: Ac
         val keyColorized = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
         holder.itemView.setOnClickListener { view->
             (view.tag as ParsedTranslation?)?.let{
-                clearFocus.invoke()
-                vm.onOpenDetails(it)
+                onItemClicked(holder.adapterPosition, it)
             }
         }
 
