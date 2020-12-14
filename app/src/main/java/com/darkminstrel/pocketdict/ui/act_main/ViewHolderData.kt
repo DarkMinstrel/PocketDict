@@ -9,6 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.forEach
+import androidx.core.view.iterator
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
@@ -71,14 +74,17 @@ class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMai
             removeAllViews()
             tag = parsed
             visibility = if(parsed.sortedItems.isEmpty()) View.GONE else View.VISIBLE
-            for(translation in parsed.sortedItems){
+            parsed.sortedItems.forEach {
                 val chip = inflater.inflate(R.layout.listitem_chip, this, false) as Chip
-                chip.text = translation.text
-                chip.tag = translation
-                chip.isEnabled = !translation.contexts.isNullOrEmpty()
+                chip.text = it.text
+                chip.tag = it
+                chip.isEnabled = !it.contexts.isNullOrEmpty()
                 addView(chip)
             }
             clearCheck()
+        }
+        if(parsed.defaultContexts.isNullOrEmpty()) {
+            binding.chipGroup.children.firstOrNull { it.isEnabled }?.let { (it as Chip).isChecked = true }
         }
     }
 
