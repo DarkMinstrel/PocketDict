@@ -1,6 +1,5 @@
 package com.darkminstrel.pocketdict.ui.act_main
 
-import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -14,12 +13,11 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:ActMainVM): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterFavorites(private val scopeView: CoroutineScope, private val vm: ActMainVM, private val clearFocus: () -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var query = ""
     private val allKeys = ArrayList<String>()
     private val objects = ArrayList<Any>()
     private val jobsMap = IdentityHashMap<ViewHolderTextPair, Job>()
-    private val cache = LruCache<String, ParsedTranslation>(Config.MEMORY_CACHE_SIZE)
 
     private val objectTitle = Object()
     private val objectNothingFound = Object()
@@ -83,20 +81,23 @@ class AdapterFavorites(private val scopeView: CoroutineScope, private val vm:Act
     }
 
     private fun bindTextPair(holder: ViewHolderTextPair, key: String){
+        holder.itemView.tag = null
         val keyColorized = if(query.isEmpty()) key else colorize(holder.itemView.context, key, query)
-        holder.itemView.setOnClickListener { vm.onQuerySubmit(key) }
+        holder.itemView.setOnClickListener { view->
+            (view.tag as ParsedTranslation?)?.let{
+                clearFocus.invoke()
+                vm.onOpenDetails(it)
+            }
+        }
 
         jobsMap[holder]?.cancel()
-        cache.get(key)?.let{
-            holder.setTexts(keyColorized, it.getDescription())
-        } ?: run {
-            holder.setTexts("", "")
-            jobsMap[holder] = scopeView.launch {
-                vm.getFavorite(key)?.let { translation ->
-                    assertUiThread()
-                    cache.put(key, translation)
-                    if (isActive) holder.setTexts(keyColorized, translation.getDescription())
-                }
+        holder.setTexts("", "")
+        jobsMap[holder] = scopeView.launch {
+            vm.getFavorite(key)?.let { translation ->
+                ensureActive()
+                assertUiThread()
+                holder.setTexts(keyColorized, translation.getDescription())
+                holder.itemView.tag = translation
             }
         }
     }

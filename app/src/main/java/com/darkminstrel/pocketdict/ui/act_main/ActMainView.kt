@@ -29,10 +29,12 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
     private val searchViewEditText: AutoCompleteTextView? = searchView.findViewById<AutoCompleteTextView>(R.id.search_src_text)?.apply{
         threshold = 0
     }
-    private val containerInput:View = rootView.findViewById(R.id.containerInput)
 
     private val toolbar = rootView.findViewById<Toolbar>(R.id.toolbar).apply{
-        setNavigationOnClickListener { vm.tryReset() }
+        setNavigationOnClickListener {
+            tryClearInput()
+            vm.tryReset()
+        }
     }
     private val viewList = ActMainViewList(scope, rootView, vm, this::clearFocus)
     private val viewDetails = ActMainViewDetails(rootView, vm)
@@ -41,11 +43,13 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String):Boolean {
                 viewList.onQueryChanged(trimQuery(newText))
+                vm.onQueryChanged(trimQuery(newText))
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                viewList.onQueryChanged("") //remove search results
-                vm.onQuerySubmit(trimQuery(query))
+                //viewList.onQueryChanged("") //remove search results
+                clearFocus()
+                vm.onQuerySubmit(query)
                 return true
             }
         })
@@ -69,11 +73,11 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
             viewDetails.setViewState(viewState)
             viewDetails.setVisible(true)
             viewList.setVisible(false)
-            clearFocus()
+            //if(viewState!=ViewStateTranslate.Progress) clearFocus()
         }else{
             viewList.setVisible(true)
             viewDetails.setVisible(false)
-            requestFocus()
+            requestFocus(false)
         }
     }
 
@@ -96,9 +100,9 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) = viewDetails.setSpeechState(speechState)
 
-    fun requestFocus() {
+    fun requestFocus(selectAll:Boolean) {
         DBG("Requesting focus")
-        searchViewEditText?.selectAll()
+        if(selectAll) searchViewEditText?.selectAll()
         searchView.requestFocus()
     }
 
@@ -115,7 +119,7 @@ class ActMainView(scope: CoroutineScope, rootView: View, vm: ActMainVM) {
     fun tryClearInput():Boolean {
         return if(searchView.query.isNotEmpty()){
             searchView.setQuery("", false)
-            requestFocus()
+            requestFocus(false)
             true
         }else false
     }

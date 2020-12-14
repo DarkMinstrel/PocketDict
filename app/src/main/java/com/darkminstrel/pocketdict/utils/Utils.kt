@@ -13,7 +13,7 @@ import com.darkminstrel.pocketdict.R
 import java.util.*
 
 fun DBG(s:Any?){
-    if(BuildConfig.DEBUG_FEATURES) Log.d("FLIODBG", s.toString())
+    if(BuildConfig.DEBUG_FEATURES) Log.d("DICTDBG", s.toString())
 }
 fun DBGE(s:Throwable?){
     DBG("ERROR: " + s?.message)

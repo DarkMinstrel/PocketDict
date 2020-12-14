@@ -7,7 +7,7 @@ import com.darkminstrel.pocketdict.R
 import kotlinx.coroutines.CoroutineScope
 
 class ActMainViewList(scope: CoroutineScope, rootView: View, vm: ActMainVM, clearFocus:()->Unit) {
-    private val adapterFavorites = AdapterFavorites(scope, vm)
+    private val adapterFavorites = AdapterFavorites(scope, vm, clearFocus)
     private val linearLayoutManager = LinearLayoutManager(rootView.context)
     private val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView).apply {
         layoutManager = linearLayoutManager

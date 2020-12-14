@@ -35,7 +35,7 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
 
     override fun onResume() {
         super.onResume()
-        view?.requestFocus()
+        view?.requestFocus(true)
     }
 
     override fun onBackPressed() {

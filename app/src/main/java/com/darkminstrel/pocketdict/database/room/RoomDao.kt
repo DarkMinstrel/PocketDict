@@ -10,11 +10,11 @@ interface RoomDao {
     fun getAllKeys(): LiveData<List<String>>
 
     @Query("INSERT INTO RoomEntity (`key`,`value`) VALUES (:key, :value)")
-    fun put(key:String, value:String)
+    suspend fun put(key:String, value:String)
 
     @Query("SELECT value FROM RoomEntity WHERE `key` = :key")
-    fun get(key: String): String?
+    suspend fun get(key: String): String?
 
     @Query("DELETE FROM RoomEntity WHERE `key` = :key")
-    fun deleteKey(key:String)
+    suspend fun deleteKey(key:String)
 }
