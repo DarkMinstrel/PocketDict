@@ -1,5 +1,6 @@
 package com.darkminstrel.pocketdict.ui.act_main
 
+import android.graphics.drawable.RippleDrawable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,17 +27,33 @@ class ActMainViewList(scope: CoroutineScope, private val binding:ActMainBinding,
         }
     }
 
+    private var pendingViewToHighlight:Int? = null
+
     private fun onItemClicked(position:Int, translation: ParsedTranslation){
-        val offset = binding.recyclerView.resources.getDimensionPixelOffset(R.dimen.scrool_top_offset)
+        val offset = binding.recyclerView.resources.getDimensionPixelOffset(R.dimen.scroll_top_offset)
         linearLayoutManager.scrollToPositionWithOffset(position,offset)
+        pendingViewToHighlight = position
         clearFocus.invoke()
         vm.onOpenDetails(translation)
     }
 
     fun setVisible(visible:Boolean){
         binding.recyclerView.visibility = if(visible) View.VISIBLE else View.GONE
-    }
 
+        //show ripple effect
+        if(visible){
+            pendingViewToHighlight?.let{ position ->
+                linearLayoutManager.findViewByPosition(position)?.let{ view ->
+                    (view.background as? RippleDrawable)?.apply{
+                        setHotspot((view.width/2).toFloat(), (view.height/2).toFloat())
+                        state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+                        view.post { state = intArrayOf() }
+                    }
+                }
+                pendingViewToHighlight = null
+            }
+        }
+    }
 
     fun onQueryChanged(queryTrimmed:String){
         adapterFavorites.setQuery(queryTrimmed)
