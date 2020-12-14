@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.darkminstrel.pocketdict.*
 import com.darkminstrel.pocketdict.data.ParsedTranslation
 import com.darkminstrel.pocketdict.data.ParsedTranslationItem
+import com.darkminstrel.pocketdict.databinding.ActMainBinding
 import com.darkminstrel.pocketdict.ui.views.ViewHolderTextPair
 import com.darkminstrel.pocketdict.ui.views.FavoriteButton
 import com.darkminstrel.pocketdict.utils.convertHtml
@@ -20,41 +21,37 @@ import com.darkminstrel.pocketdict.utils.setTintFromAttr
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
-class ViewHolderData(rootView:View, private val vm: ActMainVM) {
-    private val chipGroup = rootView.findViewById<ChipGroup>(R.id.chipGroup)
-    private val containerTranslations = rootView.findViewById<ViewGroup>(R.id.containerTranslations)
-    private val cbFavorite = rootView.findViewById<FavoriteButton>(R.id.cbFavorite)
-    private val btnSpeak = rootView.findViewById<ImageView>(R.id.btnSpeak)
-    private val inflater = LayoutInflater.from(chipGroup.context)
+class ViewHolderData(private val binding: ActMainBinding, private val vm: ActMainVM) {
+    private val inflater = LayoutInflater.from(binding.chipGroup.context)
 
     init {
-        chipGroup.setOnCheckedChangeListener { group, _ ->
-            containerTranslations.removeAllViews()
+        binding.chipGroup.setOnCheckedChangeListener { group, _ ->
+            binding.containerTranslations.removeAllViews()
             val checkedChip:Chip? = group.findCheckedChip()
             val contexts = if(checkedChip!=null) (checkedChip.tag as ParsedTranslationItem).contexts
-                else (chipGroup.tag as ParsedTranslation).defaultContexts
+                else (group.tag as ParsedTranslation).defaultContexts
             contexts?.let{
                 for(context in it){
-                    inflater.inflate(R.layout.listitem_text_pair, containerTranslations, false).also{view->
+                    inflater.inflate(R.layout.listitem_text_pair, binding.containerTranslations, false).also{view->
                         ViewHolderTextPair(view).setTexts(convertHtml(context.first), convertHtml(context.second))
-                        containerTranslations.addView(view)
+                        binding.containerTranslations.addView(view)
                     }
                 }
             }
         }
-        cbFavorite.setOnClickListener {
+        binding.cbFavorite.setOnClickListener {
             parsed?.let{
-                cbFavorite.isEnabled = false
-                vm.onChangeFavoriteStatus(it, !cbFavorite.isChecked())
-                cbFavorite.toggle()
-                cbFavorite.beat()
+                binding.cbFavorite.isEnabled = false
+                vm.onChangeFavoriteStatus(it, !binding.cbFavorite.isChecked())
+                binding.cbFavorite.toggle()
+                binding.cbFavorite.beat()
             }
         }
-        btnSpeak.setOnClickListener {
+        binding.btnSpeak.setOnClickListener {
             parsed?.let{
                 val tts = vm.ttsManager
                 if(tts.isMuted()){
-                    Toast.makeText(rootView.context, R.string.deviceIsMuted, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(binding.root.context, R.string.deviceIsMuted, Toast.LENGTH_SHORT).show()
                 }else{
                     tts.speak(it.source, it.langFrom)
                 }
@@ -70,17 +67,19 @@ class ViewHolderData(rootView:View, private val vm: ActMainVM) {
         this.parsed = parsed
         updateFavoriteButton()
 
-        chipGroup.removeAllViews()
-        chipGroup.tag = parsed
-        chipGroup.visibility = if(parsed.sortedItems.isEmpty()) View.GONE else View.VISIBLE
-        for(translation in parsed.sortedItems){
-            val chip = inflater.inflate(R.layout.listitem_chip, chipGroup, false) as Chip
-            chip.text = translation.text
-            chip.tag = translation
-            chip.isEnabled = !translation.contexts.isNullOrEmpty()
-            chipGroup.addView(chip)
+        binding.chipGroup.apply{
+            removeAllViews()
+            tag = parsed
+            visibility = if(parsed.sortedItems.isEmpty()) View.GONE else View.VISIBLE
+            for(translation in parsed.sortedItems){
+                val chip = inflater.inflate(R.layout.listitem_chip, this, false) as Chip
+                chip.text = translation.text
+                chip.tag = translation
+                chip.isEnabled = !translation.contexts.isNullOrEmpty()
+                addView(chip)
+            }
+            clearCheck()
         }
-        chipGroup.clearCheck()
     }
 
     fun setKeys(keys:List<String>){
@@ -89,18 +88,20 @@ class ViewHolderData(rootView:View, private val vm: ActMainVM) {
     }
 
     private fun updateFavoriteButton(){
-        cbFavorite.isEnabled = keys!=null && parsed!=null
-        cbFavorite.setChecked(keys?.contains(parsed?.source) == true)
+        binding.cbFavorite.apply{
+            isEnabled = keys!=null && parsed!=null
+            setChecked(keys?.contains(parsed?.source) == true)
+        }
     }
 
     fun setSpeechState(speechState: TextToSpeechManager.SpeechState) {
-        val drawable = ContextCompat.getDrawable(btnSpeak.context, when(speechState){
+        val drawable = ContextCompat.getDrawable(binding.btnSpeak.context, when(speechState){
             TextToSpeechManager.SpeechState.UTTERING -> R.drawable.ic_volume_animated
             TextToSpeechManager.SpeechState.LOADING -> R.drawable.ic_volume_1_24px
             else -> R.drawable.ic_volume_2_24px
         })
-        btnSpeak.setImageDrawable(drawable)
-        btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorPrimary else R.attr.colorDark)
+        binding.btnSpeak.setImageDrawable(drawable)
+        binding.btnSpeak.setTintFromAttr(if(speechState!=TextToSpeechManager.SpeechState.IDLE) R.attr.colorPrimary else R.attr.colorDark)
         if(drawable is AnimationDrawable) drawable.start()
     }
 }

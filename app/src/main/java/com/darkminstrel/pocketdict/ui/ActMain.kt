@@ -2,12 +2,12 @@ package com.darkminstrel.pocketdict.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.darkminstrel.pocketdict.Config
 import com.darkminstrel.pocketdict.R
+import com.darkminstrel.pocketdict.databinding.ActMainBinding
 import com.darkminstrel.pocketdict.ui.act_main.ActMainVM
 import com.darkminstrel.pocketdict.ui.act_main.ActMainView
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -24,10 +24,10 @@ class ActMain : AppCompatActivity(R.layout.act_main) {
             window.setDecorFitsSystemWindows(false)
         }
         super.onCreate(savedInstanceState)
-        val rootView = findViewById<View>(android.R.id.content)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val binding = ActMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
+        setSupportActionBar(binding.toolbar)
 
-        view = ActMainView(lifecycleScope, rootView, vm)
+        view = ActMainView(lifecycleScope, binding, vm)
         vm.liveDataFavoriteKeys.observe(this, { keys -> view?.setKeys(keys) })
         vm.liveDataViewState.observe(this, { viewState -> view?.setViewState(viewState) })
         vm.ttsManager.liveDataUttering.observe(this, { view?.setSpeechState(it) })
