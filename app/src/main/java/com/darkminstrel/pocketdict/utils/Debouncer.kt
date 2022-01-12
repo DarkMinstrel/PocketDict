@@ -7,7 +7,7 @@ class Debouncer(private val debounceTime:Long) {
 
     suspend fun debounce(){
         val now = System.currentTimeMillis()
-        if(now - lastTs<debounceTime) delay(now-lastTs)
+        if(now-lastTs<debounceTime) delay(debounceTime-(now-lastTs))
         lastTs = now
     }
 }
