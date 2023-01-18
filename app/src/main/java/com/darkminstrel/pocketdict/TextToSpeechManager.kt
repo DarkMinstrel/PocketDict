@@ -5,45 +5,50 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
+@Immutable
+enum class SpeechState { IDLE, LOADING, UTTERING }
+
 class TextToSpeechManager(context: Context) {
-    enum class SpeechState {IDLE, LOADING, UTTERING}
-
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-    private val _liveDataUttering = MutableLiveData<SpeechState>().apply { value = SpeechState.IDLE }
-    val liveDataUttering = _liveDataUttering as LiveData<SpeechState>
+    private val _speechState = MutableStateFlow(SpeechState.IDLE)
+    val speechState = _speechState as Flow<SpeechState>
 
-    private val initListener:TextToSpeech.OnInitListener = TextToSpeech.OnInitListener {status ->
-        if(status == TextToSpeech.SUCCESS){
-            tts.setOnUtteranceProgressListener(object: UtteranceProgressListener() {
+    private val initListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
+        if (status == TextToSpeech.SUCCESS) {
+            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onDone(utteranceId: String?) {
-                    _liveDataUttering.postValue(SpeechState.IDLE)
+                    _speechState.value = SpeechState.IDLE
                 }
+
+                @Deprecated("Deprecated in Java")
                 override fun onError(utteranceId: String?) {
-                    _liveDataUttering.postValue(SpeechState.IDLE)
+                    _speechState.value = SpeechState.IDLE
                 }
+
                 override fun onStart(utteranceId: String?) {
-                    _liveDataUttering.postValue(SpeechState.UTTERING)
+                    _speechState.value = SpeechState.UTTERING
                 }
             })
         }
     }
-    private val tts:TextToSpeech = TextToSpeech(context, initListener)
+    private val tts: TextToSpeech = TextToSpeech(context, initListener)
 
-    fun speak(what:String, lang:String):Boolean{
+    fun speak(what: String, lang: String): Boolean {
         val params = Bundle().apply { putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, what) }
         tts.language = Locale(lang)
         val result = tts.speak(what, TextToSpeech.QUEUE_FLUSH, params, what)
-        return when(result){
-            TextToSpeech.SUCCESS ->{
-                _liveDataUttering.postValue(SpeechState.LOADING)
+        return when (result) {
+            TextToSpeech.SUCCESS -> {
+                _speechState.value = SpeechState.LOADING
                 true
             }
-            else ->{
-                _liveDataUttering.postValue(SpeechState.IDLE)
+            else -> {
+                _speechState.value = SpeechState.IDLE
                 false
             }
         }

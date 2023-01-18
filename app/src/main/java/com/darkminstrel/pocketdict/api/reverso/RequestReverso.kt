@@ -10,5 +10,5 @@ data class RequestReverso(
     val pageUrl: String = "",
     val pageTitle: String = "",
     val reversoPage: String? = null,
-    val appId: String = ""
+    val appId: String = "",
 )

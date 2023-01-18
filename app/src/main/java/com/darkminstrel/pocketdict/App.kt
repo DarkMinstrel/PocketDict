@@ -1,46 +1,63 @@
 package com.darkminstrel.pocketdict
 
 import android.app.Application
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.darkminstrel.pocketdict.api.leo.ApiLeo
 import com.darkminstrel.pocketdict.api.reverso.ApiReverso
-import com.darkminstrel.pocketdict.database.room.DatabaseRoom
-import com.darkminstrel.pocketdict.ui.act_main.ActMainVM
+import com.darkminstrel.pocketdict.ui.main.ViewModelMain
 import com.darkminstrel.pocketdict.usecases.UsecaseTranslate
+import com.darkminstrel.pocketdict.usecases.UsecaseTranslateImpl
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.android.viewmodel.dsl.viewModel
-import org.koin.core.KoinApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-class App: Application() {
+class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        setupKoin()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(appModule)
+        }
+    }
+}
+
+private val appModule = module {
+    single { TextToSpeechManager(context = get()) }
+
+    single<OkHttpClient> {
+        OkHttpClient.Builder()
+            .addInterceptor(ChuckerInterceptor.Builder(context = get()).build())
+            .build()
+    }
+    single { Moshi.Builder().build() }
+    single { ApiReverso.build(get(), get()) }
+    single { ApiLeo.build(get(), get()) }
+    single<HistoryRepository> {
+        HistoryRepositoryImpl(datastore = DataStoreFactory.create(
+            serializer = datastoreSerializer(moshi = get(), defaultValue = History()),
+            produceFile = { androidApplication().dataStoreFile("translations") }
+        ))
     }
 
-    private fun setupKoin(): KoinApplication {
-        val appModule = module {
-            single{ Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
-            single{ ApiReverso.build(get()) }
-            single{ ApiLeo.build(get()) }
-            single{ DatabaseRoom.build(get(), get()) }
-            single{ TextToSpeechManager(get()) }
-        }
-        val usecaseModule = module {
-            factory{ UsecaseTranslate(get(), get(), get()) }
-        }
-        val vmModule = module {
-            viewModel{ ActMainVM(get(), get()) }
-        }
+    single<UsecaseTranslate> {
+        UsecaseTranslateImpl(
+            apiReverso = get(),
+            apiLeo = get(),
+            historyRepository = get(),
+        )
+    }
 
-        return startKoin {
-            if(BuildConfig.DEBUG_FEATURES) androidLogger()
-            androidContext(this@App)
-            modules(listOf(appModule, usecaseModule, vmModule))
-        }
+    viewModel {
+        ViewModelMain(usecase = get(), tts = get())
     }
 
 }

@@ -5,6 +5,7 @@
     <string name="errorEmpty">No translations found</string>
     <string name="errorNetwork">Network error</string>
     <string name="nothingFound">Nothing found</string>
+    <string name="errorUnknown">Unknown error</string>
 
     <string name="enterAWordHere">Enter a word here</string>
     <string name="favoriteTranslations">Favorite translations</string>

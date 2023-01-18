@@ -1,66 +1,70 @@
 package com.darkminstrel.pocketdict.usecases
 
-import android.util.LruCache
-import com.darkminstrel.pocketdict.Config
-import com.darkminstrel.pocketdict.ResultWrapper
+import com.darkminstrel.pocketdict.History
+import com.darkminstrel.pocketdict.HistoryRepository
 import com.darkminstrel.pocketdict.api.ResponseCommon
 import com.darkminstrel.pocketdict.api.leo.ApiLeo
 import com.darkminstrel.pocketdict.api.leo.RequestLeo
 import com.darkminstrel.pocketdict.api.reverso.ApiReverso
 import com.darkminstrel.pocketdict.api.reverso.RequestReverso
-import com.darkminstrel.pocketdict.data.ParsedTranslation
-import com.darkminstrel.pocketdict.data.ViewStateTranslate
-import com.darkminstrel.pocketdict.database.Databaseable
-import com.darkminstrel.pocketdict.safeRun
-import com.darkminstrel.pocketdict.utils.Debouncer
+import com.darkminstrel.pocketdict.models.ParsedTranslation
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 
 private const val langFrom = "en"
 private const val langTo = "ru"
 
-class UsecaseTranslate(private val apiReverso: ApiReverso, private val apiLeo: ApiLeo, private val db: Databaseable) {
+interface UsecaseTranslate {
+    val flowHistory: Flow<History>
+    suspend fun getTranslation(query: String): Result<ParsedTranslation>
+    suspend fun addToHistory(key: String, value: String)
+    suspend fun deleteFromHistory(key: String)
+}
 
-    val liveDataFavoriteKeys = db.getAllKeys()
-    private val memoryCache = LruCache<String, ParsedTranslation>(Config.MEMORY_CACHE_SIZE)
+class UsecaseTranslateImpl(
+    private val apiReverso: ApiReverso,
+    private val apiLeo: ApiLeo,
+    private val historyRepository: HistoryRepository,
+) : UsecaseTranslate {
 
-    suspend fun getFavorite(key:String):ParsedTranslation? {
-        return memoryCache.get(key) ?: withContext(Dispatchers.IO){
-            db.get(key)?.also { memoryCache.put(key, it) }
-        }
+    override val flowHistory: Flow<History> = historyRepository.flow
+
+    override suspend fun deleteFromHistory(key: String) {
+        historyRepository.deleteItem(key)
     }
 
-    suspend fun setFavorite(translation:ParsedTranslation, isFavorite:Boolean):Unit = withContext(Dispatchers.IO){
-        translation.source.let{
-            if(isFavorite) {
-                db.put(it, translation)
-                memoryCache.put(it, translation)
-            }
-            else db.delete(it)
-        }
-    }
-
-    suspend fun getTranslation(query: String): ViewStateTranslate = getFavorite(query)?.let{ ViewStateTranslate.Data(it) } ?: getFromNetwork(query)
-
-    private val debouncer = Debouncer(Config.NETWORK_DEBOUNCE)
-    private suspend fun getFromNetwork(query: String):ViewStateTranslate = withContext(Dispatchers.IO){
-        debouncer.debounce()
-        ensureActive()
-
-        val deferreds = ArrayList<Deferred<ResultWrapper<ResponseCommon>>>(2)
+    override suspend fun getTranslation(query: String): Result<ParsedTranslation> = withContext(Dispatchers.IO) {
+        val deferreds = ArrayList<Deferred<Result<ResponseCommon>>>(2)
         deferreds += async(Dispatchers.IO) {
             val requestReverso = RequestReverso(uiLang = "en", direction = "$langFrom-$langTo", source = query)
-            safeRun { apiReverso.getTranslation(requestReverso) }
+            runCatching { apiReverso.getTranslation(requestReverso) }
         }
-        if(langFrom=="en" && langTo=="ru") {
+        if (langFrom == "en" && langTo == "ru") {
             deferreds += async(Dispatchers.IO) {
                 val requestLeo = RequestLeo(word = query)
-                safeRun { apiLeo.getTranslation(requestLeo) }
+                runCatching { apiLeo.getTranslation(requestLeo) }
             }
         }
-        val result = deferreds.awaitAll()
-            .map { ViewStateTranslate.from(query, it) }
-            .reduce { first,second -> first.mergeWith(second) }
-        result
+        deferreds.awaitAll()
+            .map { result ->
+                result.fold(
+                    onSuccess = { it.mapToDomainModel() },
+                    onFailure = { Result.failure(it) }
+                )
+            }.reduce { first, second ->
+                val t1 = first.getOrNull()
+                val t2 = second.getOrNull()
+                when {
+                    t1 != null && t2 != null -> Result.success(t1.mergeWith(t2))
+                    t1 != null -> first
+                    t2 != null -> second
+                    else -> first
+                }
+            }
     }
 
+    override suspend fun addToHistory(key: String, value: String) {
+        historyRepository.addItem(key, value)
+    }
 }
+

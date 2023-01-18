@@ -1,8 +1,7 @@
 package com.darkminstrel.pocketdict.api
 
-import com.darkminstrel.pocketdict.data.ParsedTranslation
+import com.darkminstrel.pocketdict.models.ParsedTranslation
 
 interface ResponseCommon {
-    fun toParsed():ParsedTranslation?
-    fun getErrorMessage():String?
+    fun mapToDomainModel(): Result<ParsedTranslation>
 }
